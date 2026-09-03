@@ -269,17 +269,17 @@ export const Footer = () => {
 
           {/* Payment Systems Row */}
           <div className="pt-8 border-t border-[#23272d]/80">
-            <div className="flex flex-wrap items-center justify-center sm:justify-between gap-4 sm:gap-6">
+            <div className="flex flex-wrap items-center justify-center sm:justify-between gap-3 sm:gap-4">
               {paymentMethods.map((payment) => (
                 <div
                   key={payment.name}
-                  className="h-7 px-2.5 py-1 rounded bg-[#181a1d] border border-[#23272d] flex items-center justify-center hover:border-gray-500 transition-colors"
+                  className="h-8 px-3 py-1 rounded bg-[#141619] border border-[#23272d] flex items-center justify-center hover:border-gray-600 transition-all duration-300 group"
                   title={payment.name}
                 >
                   <img
                     src={payment.img}
                     alt={payment.name}
-                    className="h-4 sm:h-5 w-auto object-contain brightness-90 hover:brightness-100 transition-all"
+                    className="h-4 sm:h-4.5 w-auto object-contain grayscale brightness-125 contrast-125 opacity-70 group-hover:opacity-100 transition-all duration-300"
                   />
                 </div>
               ))}

@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 
 const TOTAL_FRAMES = 82;
-const INITIAL_BATCH_SIZE = 15;
 
-export const CanvasSequence = ({ progress }) => {
+export const CanvasSequence = ({ progress = 0 }) => {
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
   const imagesRef = useRef([]);
   const targetFrameRef = useRef(0);
   const currentFrameRef = useRef(0);
+  const lastDrawnFrameRef = useRef(-1);
   const [isLoaded, setIsLoaded] = useState(false);
   const [loadPercent, setLoadPercent] = useState(0);
 
@@ -18,25 +18,67 @@ export const CanvasSequence = ({ progress }) => {
     return `/sequence/frame_${frameNum}.webp`;
   };
 
+  // Find nearest loaded image to prevent any blank frames or sudden jumps back to frame 0
+  const getBestImage = useCallback((targetIndex) => {
+    const images = imagesRef.current;
+    if (!images || images.length === 0) return null;
+
+    // 1. Exact match if fully loaded
+    const exact = images[targetIndex];
+    if (exact && exact.complete && exact.naturalWidth > 0) {
+      return exact;
+    }
+
+    // 2. Search backward for closest loaded frame
+    for (let i = targetIndex - 1; i >= 0; i--) {
+      const img = images[i];
+      if (img && img.complete && img.naturalWidth > 0) {
+        return img;
+      }
+    }
+
+    // 3. Search forward for closest loaded frame
+    for (let i = targetIndex + 1; i < TOTAL_FRAMES; i++) {
+      const img = images[i];
+      if (img && img.complete && img.naturalWidth > 0) {
+        return img;
+      }
+    }
+
+    return null;
+  }, []);
+
   // Render a specific frame onto the canvas
-  const renderFrame = useCallback((frameIndex) => {
+  const renderFrame = useCallback((frameIndex, force = false) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const img = imagesRef.current[frameIndex] || imagesRef.current[0];
-    if (!img || !img.complete || img.naturalWidth === 0) return;
+    const img = getBestImage(frameIndex);
+    if (!img) return;
+
+    if (!force && lastDrawnFrameRef.current === frameIndex) {
+      return;
+    }
 
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const width = canvas.clientWidth;
     const height = canvas.clientHeight;
+    if (width === 0 || height === 0) return;
 
-    if (canvas.width !== width * dpr || canvas.height !== height * dpr) {
-      canvas.width = width * dpr;
-      canvas.height = height * dpr;
-      ctx.scale(dpr, dpr);
+    const targetWidth = Math.round(width * dpr);
+    const targetHeight = Math.round(height * dpr);
+
+    if (canvas.width !== targetWidth || canvas.height !== targetHeight) {
+      canvas.width = targetWidth;
+      canvas.height = targetHeight;
     }
+
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.scale(dpr, dpr);
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
 
     const imgWidth = img.naturalWidth;
     const imgHeight = img.naturalHeight;
@@ -63,53 +105,41 @@ export const CanvasSequence = ({ progress }) => {
       renderWidth,
       renderHeight
     );
-  }, []);
 
-  // Preloading frames in two phases
+    lastDrawnFrameRef.current = frameIndex;
+  }, [getBestImage]);
+
+  // Preload all frames eagerly in parallel
   useEffect(() => {
     let isCancelled = false;
     imagesRef.current = new Array(TOTAL_FRAMES);
-
     let loadedCount = 0;
 
-    // Phase 1: Load initial batch
-    const initialPromises = [];
-    for (let i = 0; i < INITIAL_BATCH_SIZE; i++) {
-      const p = new Promise((resolve) => {
-        const img = new Image();
-        img.src = getFramePath(i);
-        img.onload = () => {
-          if (!isCancelled) {
-            imagesRef.current[i] = img;
-            loadedCount++;
-            setLoadPercent(Math.round((loadedCount / INITIAL_BATCH_SIZE) * 100));
-            if (i === 0) {
-              renderFrame(0);
-            }
-          }
-          resolve(img);
-        };
-        img.onerror = () => resolve(null);
-      });
-      initialPromises.push(p);
+    // Load all 82 frames concurrently
+    for (let i = 0; i < TOTAL_FRAMES; i++) {
+      const img = new Image();
+      img.src = getFramePath(i);
+      img.onload = () => {
+        if (isCancelled) return;
+        imagesRef.current[i] = img;
+        loadedCount++;
+        const percent = Math.round((loadedCount / TOTAL_FRAMES) * 100);
+        setLoadPercent(percent);
+
+        // As soon as first frame is ready, render it immediately
+        if (i === 0) {
+          setIsLoaded(true);
+          renderFrame(0, true);
+        } else if (Math.round(currentFrameRef.current) === i) {
+          renderFrame(i, true);
+        }
+
+        if (loadedCount >= 10) {
+          setIsLoaded(true);
+        }
+      };
+      img.onerror = () => {};
     }
-
-    Promise.all(initialPromises).then(() => {
-      if (isCancelled) return;
-      setIsLoaded(true);
-      renderFrame(0);
-
-      // Phase 2: Load remaining frames in background
-      for (let i = INITIAL_BATCH_SIZE; i < TOTAL_FRAMES; i++) {
-        const img = new Image();
-        img.src = getFramePath(i);
-        img.onload = () => {
-          if (!isCancelled) {
-            imagesRef.current[i] = img;
-          }
-        };
-      }
-    });
 
     return () => {
       isCancelled = true;
@@ -123,7 +153,7 @@ export const CanvasSequence = ({ progress }) => {
         Math.max(Math.round(currentFrameRef.current), 0),
         TOTAL_FRAMES - 1
       );
-      renderFrame(frameIndex);
+      renderFrame(frameIndex, true);
     };
 
     window.addEventListener('resize', handleResize);
@@ -136,15 +166,22 @@ export const CanvasSequence = ({ progress }) => {
     targetFrameRef.current = clampedProgress * (TOTAL_FRAMES - 1);
   }, [progress]);
 
-  // Animation RAF loop with LERP for smooth playback
+  // Animation RAF loop with smooth dampening
   useEffect(() => {
     let animationFrameId;
 
     const animate = () => {
       const diff = targetFrameRef.current - currentFrameRef.current;
-      if (Math.abs(diff) > 0.005) {
-        // LERP factor: 0.12 gives smooth, silky responsiveness
-        currentFrameRef.current += diff * 0.12;
+      
+      if (Math.abs(diff) > 0.001) {
+        // Silky smooth interpolation: 0.14 factor
+        currentFrameRef.current += diff * 0.14;
+
+        // Snap to target if very close to eliminate any micro-flicker or jitter
+        if (Math.abs(targetFrameRef.current - currentFrameRef.current) < 0.008) {
+          currentFrameRef.current = targetFrameRef.current;
+        }
+
         const frameIndex = Math.min(
           Math.max(Math.round(currentFrameRef.current), 0),
           TOTAL_FRAMES - 1

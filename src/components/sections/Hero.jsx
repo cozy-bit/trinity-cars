@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Send, MessageCircle, ChevronDown } from 'lucide-react';
+import { Send, MessageCircle, ChevronDown, FastForward } from 'lucide-react';
 import { CanvasSequence } from './CanvasSequence';
 
 export const Hero = () => {
@@ -35,18 +35,78 @@ export const Hero = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Calculate UI opacities based on scrollytelling progress
-  // 1. Initial Hint ("Scroll down to reveal"): visible from 0 to 0.25
-  const hintOpacity = Math.max(0, 1 - scrollProgress / 0.22);
+  const skipAnimRef = useRef(null);
 
-  // 2. Final Branding UI ("Dubai", subtitle, controls): smoothly appears from 0.70 to 0.95
-  const revealProgress = Math.min(1, Math.max(0, (scrollProgress - 0.7) / 0.25));
+  // Handle Skip Intro button click with smooth cinematic deceleration at the end
+  const handleSkipIntro = () => {
+    if (skipAnimRef.current) {
+      cancelAnimationFrame(skipAnimRef.current);
+    }
+
+    const section = heroSectionRef.current;
+    if (!section) return;
+
+    const rect = section.getBoundingClientRect();
+    const startY = window.scrollY;
+    const targetY = startY + rect.bottom - window.innerHeight;
+    const distance = targetY - startY;
+    if (distance <= 0) return;
+
+    // 1.3s total duration with easeOutQuart for a fast start and luxurious, slowed-down finish
+    const duration = 1300;
+    const startTime = performance.now();
+    const easeOutQuart = (t) => 1 - Math.pow(1 - t, 4);
+
+    const step = (currentTime) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const easedProgress = easeOutQuart(progress);
+
+      window.scrollTo(0, startY + distance * easedProgress);
+
+      if (progress < 1) {
+        skipAnimRef.current = requestAnimationFrame(step);
+      } else {
+        skipAnimRef.current = null;
+      }
+    };
+
+    skipAnimRef.current = requestAnimationFrame(step);
+  };
+
+  // Cancel skip animation if user takes over manual scrolling
+  useEffect(() => {
+    const handleUserInterrupt = () => {
+      if (skipAnimRef.current) {
+        cancelAnimationFrame(skipAnimRef.current);
+        skipAnimRef.current = null;
+      }
+    };
+
+    window.addEventListener('wheel', handleUserInterrupt, { passive: true });
+    window.addEventListener('touchmove', handleUserInterrupt, { passive: true });
+
+    return () => {
+      window.removeEventListener('wheel', handleUserInterrupt);
+      window.removeEventListener('touchmove', handleUserInterrupt);
+      if (skipAnimRef.current) {
+        cancelAnimationFrame(skipAnimRef.current);
+      }
+    };
+  }, []);
+
+  // Calculate UI opacities based on scrollytelling progress
+  // 1. Initial Hint ("Scroll down to reveal"): visible from 0 to 0.18
+  const hintOpacity = Math.max(0, 1 - scrollProgress / 0.18);
+
+  // 2. Final Branding UI ("Dubai", subtitle, controls): smoothly appears from 0.50 to 0.90
+  const revealProgress = Math.min(1, Math.max(0, (scrollProgress - 0.5) / 0.4));
 
   return (
     <section
       id="hero"
       ref={heroSectionRef}
-      className="relative w-full h-[300vh] -mt-20 bg-[#0d0f11]"
+      className="relative w-full h-[170vh] -mt-20 bg-[#0d0f11]"
     >
       {/* Sticky Fullscreen Viewport */}
       <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between select-none">
@@ -77,7 +137,25 @@ export const Hero = () => {
           </div>
         </div>
 
-        {/* 2. FINAL PHASE UI: Revealed Luxury Hero Content */}
+        {/* 2. SKIP INTRO BUTTON (Glassmorphism, hover #29b6b6) */}
+        <div
+          className="absolute bottom-8 right-6 md:right-12 z-30 transition-all duration-300 pointer-events-auto"
+          style={{
+            opacity: Math.max(0, 1 - (scrollProgress - 0.5) / 0.3),
+            pointerEvents: scrollProgress > 0.8 ? 'none' : 'auto',
+          }}
+        >
+          <button
+            onClick={handleSkipIntro}
+            className="flex items-center gap-2 px-4 py-2 rounded-full bg-black/50 hover:bg-black/80 backdrop-blur-md border border-white/20 hover:border-[#29b6b6] text-xs font-semibold uppercase tracking-widest text-gray-200 hover:text-[#29b6b6] transition-all duration-300 shadow-xl hover:shadow-[0_0_20px_rgba(41,182,182,0.35)] group cursor-pointer"
+            aria-label="Skip intro animation"
+          >
+            <span>Skip Intro</span>
+            <FastForward className="w-3.5 h-3.5 text-gray-400 group-hover:text-[#29b6b6] group-hover:translate-x-0.5 transition-all duration-300" />
+          </button>
+        </div>
+
+        {/* 3. FINAL PHASE UI: Revealed Luxury Hero Content */}
         <div
           className="relative z-20 text-center flex flex-col items-center justify-center my-auto px-6 transition-all duration-500 pointer-events-none"
           style={{
