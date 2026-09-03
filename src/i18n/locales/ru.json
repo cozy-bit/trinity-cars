@@ -1,8 +1,50 @@
-﻿{
+{
   "nav": {
     "carList": "Автопарк",
     "yachtList": "Яхты",
-    "chauffeur": "С водителем"
+    "chauffeur": "С водителем",
+    "conditions": "Условия",
+    "testimonials": "Отзывы",
+    "articles": "Статьи",
+    "aboutUs": "О нас",
+    "contacts": "Контакты"
+  },
+  "hero": {
+    "city": "Дубай",
+    "subtitle": "АРЕНДА ЛЮКСОВЫХ АВТО"
+  },
+  "mostPopular": {
+    "title": "Популярные авто",
+    "searchPlaceholder": "Поиск авто",
+    "perDay": "в день",
+    "viewAll": "ПОКАЗАТЬ ВСЕ"
+  },
+  "mapContact": {
+    "title": "Задайте любой вопрос",
+    "namePlaceholder": "Имя",
+    "emailPlaceholder": "Эл. почта",
+    "phonePlaceholder": "Телефон",
+    "messagePlaceholder": "Сообщение",
+    "submit": "ОТПРАВИТЬ ЗАЯВКУ",
+    "success": "Спасибо! Ваша заявка успешно отправлена."
+  },
+  "discount": {
+    "title": "Получите скидку до 60%",
+    "subtitle": "Подпишитесь на наши новости и первыми узнавайте о скидках и спецпредложениях",
+    "placeholder": "Ваш email",
+    "button": "ПОЛУЧИТЬ",
+    "success": "Вы успешно подписались на эксклюзивные предложения!"
+  },
+  "footer": {
+    "forCustomers": "Клиентам",
+    "carList": "Автопарк",
+    "service": "Услуги",
+    "requestCallback": "ЗАКАЗАТЬ ЗВОНОК",
+    "address": "24 4th St - Al Quoz - Al Quoz Industrial Area 3 - Dubai",
+    "newsletterPlaceholder": "Ваш email",
+    "subscribe": "ПОДПИСАТЬСЯ",
+    "copyright": "© 2026 TRINITY. Все права защищены.",
+    "privacyPolicy": "Политика конфиденциальности"
   },
   "buttons": {
     "rent": "Арендовать",

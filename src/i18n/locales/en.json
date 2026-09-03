@@ -1,8 +1,50 @@
-﻿{
+{
   "nav": {
     "carList": "Car List",
     "yachtList": "Yacht list",
-    "chauffeur": "Chauffeur"
+    "chauffeur": "Chauffeur",
+    "conditions": "Conditions",
+    "testimonials": "Testimonials",
+    "articles": "Articles",
+    "aboutUs": "About Us",
+    "contacts": "Contacts"
+  },
+  "hero": {
+    "city": "Dubai",
+    "subtitle": "LUXURY CAR RENTAL"
+  },
+  "mostPopular": {
+    "title": "Most Popular",
+    "searchPlaceholder": "Car search",
+    "perDay": "per day",
+    "viewAll": "VIEW ALL"
+  },
+  "mapContact": {
+    "title": "Ask us anything",
+    "namePlaceholder": "Name",
+    "emailPlaceholder": "E-mail",
+    "phonePlaceholder": "Phone",
+    "messagePlaceholder": "Message",
+    "submit": "SEND THE REQUEST",
+    "success": "Thank you! Your request has been sent successfully."
+  },
+  "discount": {
+    "title": "Get a discount of up to 60%",
+    "subtitle": "Subscribe to our news and be the first to know about discounts and special offers",
+    "placeholder": "Your email",
+    "button": "RECEIVE",
+    "success": "You have successfully subscribed to exclusive offers!"
+  },
+  "footer": {
+    "forCustomers": "For Customers",
+    "carList": "Car List",
+    "service": "Service",
+    "requestCallback": "REQUEST A CALLBACK",
+    "address": "24 4th St - Al Quoz - Al Quoz Industrial Area 3 - Dubai",
+    "newsletterPlaceholder": "Your email",
+    "subscribe": "SUBSCRIBE",
+    "copyright": "© 2026 TRINITY. All rights reserved.",
+    "privacyPolicy": "Privacy Policy"
   },
   "buttons": {
     "rent": "Rent",
