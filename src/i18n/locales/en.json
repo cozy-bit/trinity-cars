@@ -1,0 +1,12 @@
+﻿{
+  "nav": {
+    "carList": "Car List",
+    "yachtList": "Yacht list",
+    "chauffeur": "Chauffeur"
+  },
+  "buttons": {
+    "rent": "Rent",
+    "viewAll": "View all",
+    "submit": "Send the request"
+  }
+}

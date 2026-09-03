@@ -1,0 +1,10 @@
+@import "tailwindcss";
+
+@theme {
+  --color-dark-bg: #0d0f11;
+  --color-dark-surface: #141619;
+  --color-dark-card: #181b1f;
+  --color-dark-border: #23272d;
+  --color-brand-cyan: #29b6b6;
+  --color-brand-cyan-hover: #229999;
+}
