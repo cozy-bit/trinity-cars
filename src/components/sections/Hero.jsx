@@ -92,17 +92,17 @@ export const Hero = () => {
   }, []);
 
   // Calculate UI opacities based on scrollytelling progress
-  // 1. Initial Hint (Arrow): visible from 0 to 0.15
-  const hintOpacity = Math.max(0, 1 - scrollProgress / 0.15);
+  // 1. Initial Hint (Arrow): visible from 0 to 0.12
+  const hintOpacity = Math.max(0, 1 - scrollProgress / 0.12);
 
-  // 2. Final Branding UI ("Dubai", subtitle, controls): smoothly appears from 0.25 to 0.75
-  const revealProgress = Math.min(1, Math.max(0, (scrollProgress - 0.25) / 0.5));
+  // 2. Final Branding UI ("Dubai", subtitle, controls): smoothly appears from 0.45 to 0.85
+  const revealProgress = Math.min(1, Math.max(0, (scrollProgress - 0.45) / 0.4));
 
   return (
     <section
       id="hero"
       ref={heroSectionRef}
-      className="relative w-full h-[125vh] sm:h-[135vh] lg:h-[145vh] -mt-20 bg-[#0d0f11]"
+      className="relative w-full h-[250vh] -mt-20 bg-[#0d0f11]"
     >
       {/* Sticky Fullscreen Viewport */}
       <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between select-none">
