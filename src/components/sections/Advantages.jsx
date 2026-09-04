@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 
 const advantages = [
   {
@@ -33,9 +33,9 @@ const advantages = [
   },
 ];
 
-export default function Advantages() {
+export const Advantages = () => {
   return (
-    <section className="advantages-section">
+    <section id="advantages" className="advantages-section">
       <h2 className="advantages-title">Advantages</h2>
 
       <div className="advantages-grid">
@@ -51,4 +51,6 @@ export default function Advantages() {
       </div>
     </section>
   );
-}
+};
+
+export default Advantages;
