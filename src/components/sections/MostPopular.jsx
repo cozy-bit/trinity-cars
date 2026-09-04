@@ -119,23 +119,23 @@ export const MostPopular = () => {
             </div>
 
             {/* Timeline & Car Items List */}
-            <div className="relative flex items-stretch gap-6 pl-2">
-              {/* Left Vertical Track with Top/Bottom Chevrons */}
-              <div className="flex flex-col items-center justify-between w-6 py-1 select-none flex-shrink-0">
+            <div className="relative flex items-stretch gap-7 pl-1 mt-2">
+              {/* Left Vertical Track with Circular Top/Bottom Chevrons */}
+              <div className="flex flex-col items-center justify-between w-8 py-1 select-none flex-shrink-0">
                 <button
                   onClick={handlePrevCar}
-                  className="p-1 text-gray-500 hover:text-brand-cyan transition-colors cursor-pointer"
+                  className="w-8 h-8 rounded-full border border-[#2b2f38] bg-[#14161a] flex items-center justify-center text-gray-400 hover:text-white hover:border-brand-cyan transition-all cursor-pointer shadow-sm active:scale-95"
                   aria-label="Previous car"
                 >
                   <ChevronUp className="w-4 h-4" />
                 </button>
 
-                {/* Vertical Line */}
-                <div className="w-[1.5px] flex-1 bg-[#23272e] my-2 relative rounded-full" />
+                {/* Continuous Vertical Axis Line */}
+                <div className="w-[1.5px] flex-1 bg-[#262a32] my-3 relative rounded-full" />
 
                 <button
                   onClick={handleNextCar}
-                  className="p-1 text-gray-500 hover:text-brand-cyan transition-colors cursor-pointer"
+                  className="w-8 h-8 rounded-full border border-[#2b2f38] bg-[#14161a] flex items-center justify-center text-gray-400 hover:text-white hover:border-brand-cyan transition-all cursor-pointer shadow-sm active:scale-95"
                   aria-label="Next car"
                 >
                   <ChevronDown className="w-4 h-4" />
@@ -145,7 +145,7 @@ export const MostPopular = () => {
               {/* Models List */}
               <div
                 ref={listContainerRef}
-                className="flex-1 flex flex-col gap-3 max-h-[350px] overflow-y-auto scrollbar-none py-1 pr-2"
+                className="flex-1 flex flex-col gap-5 max-h-[360px] overflow-y-auto scrollbar-none py-2 pr-2"
               >
                 {filteredCars.length > 0 ? (
                   filteredCars.map((car) => {
@@ -158,21 +158,21 @@ export const MostPopular = () => {
                       >
                         <button
                           onClick={() => setSelectedCarId(car.id)}
-                          className="group relative flex flex-col text-left py-2 px-1 transition-all duration-300 cursor-pointer w-full focus:outline-none"
+                          className="group relative flex flex-col text-left py-1 transition-all duration-300 cursor-pointer w-full focus:outline-none"
                         >
                           <span
-                            className={`text-base md:text-lg font-bold tracking-tight transition-all duration-300 ${
+                            className={`text-lg sm:text-xl font-bold tracking-tight transition-all duration-300 ${
                               isSelected
-                                ? 'text-brand-cyan font-extrabold translate-x-1'
-                                : 'text-white/90 group-hover:text-white'
+                                ? 'text-brand-cyan font-black scale-[1.02] origin-left'
+                                : 'text-white/95 group-hover:text-white'
                             }`}
                           >
                             {car.brand}
                           </span>
                           <span
-                            className={`text-xs md:text-sm font-medium transition-all duration-300 ${
+                            className={`text-xs sm:text-sm transition-all duration-300 mt-0.5 ${
                               isSelected
-                                ? 'text-brand-cyan/90 font-semibold translate-x-1'
+                                ? 'text-brand-cyan/90 font-medium'
                                 : 'text-gray-500 group-hover:text-gray-400'
                             }`}
                           >
@@ -182,30 +182,30 @@ export const MostPopular = () => {
 
                         {/* Active timeline branch connector line + glowing dot */}
                         {isSelected && (
-                          <div className="absolute -left-[30.5px] top-0 bottom-0 flex items-center pointer-events-none overflow-visible">
+                          <div className="absolute -left-[43px] top-0 bottom-0 flex items-center pointer-events-none overflow-visible">
                             <svg
-                              className="w-[280px] h-[52px] overflow-visible"
-                              viewBox="0 0 280 52"
+                              className="w-[300px] h-[58px] overflow-visible"
+                              viewBox="0 0 300 58"
                               fill="none"
                             >
-                              {/* Glowing outer circle */}
+                              {/* Outer Cyan Glow Circle on the vertical line */}
                               <circle
                                 cx="0"
                                 cy="15"
                                 r="5.5"
                                 fill="#29b6b6"
-                                className="drop-shadow-[0_0_8px_rgba(41,182,182,0.9)]"
+                                className="drop-shadow-[0_0_8px_rgba(41,182,182,0.95)]"
                               />
-                              {/* White center dot */}
+                              {/* Inner White Dot */}
                               <circle cx="0" cy="15" r="2.5" fill="#ffffff" />
-                              {/* Connector line and underline */}
+                              {/* Diagonal connector path extending into underline */}
                               <path
-                                d="M 0 15 L 14 15 L 26 40 L 190 40"
+                                d="M 0 15 L 14 15 L 28 44 L 200 44"
                                 stroke="#29b6b6"
                                 strokeWidth="1.5"
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
-                                className="animate-connector-line drop-shadow-[0_0_6px_rgba(41,182,182,0.4)]"
+                                className="animate-connector-line drop-shadow-[0_0_6px_rgba(41,182,182,0.45)]"
                               />
                             </svg>
                           </div>
@@ -222,7 +222,7 @@ export const MostPopular = () => {
             </div>
 
             {/* VIEW ALL Button */}
-            <div className="mt-8 pl-8">
+            <div className="mt-8 pl-15">
               <button
                 onClick={() => {
                   const specialOffersSection = document.getElementById('special-offers');
