@@ -109,40 +109,57 @@ export const CanvasSequence = ({ progress = 0 }) => {
     lastDrawnFrameRef.current = frameIndex;
   }, [getBestImage]);
 
-  // Preload all frames eagerly in parallel
+  // Preload all frames eagerly with robust fallback & zero freeze
   useEffect(() => {
     let isCancelled = false;
     imagesRef.current = new Array(TOTAL_FRAMES);
     let loadedCount = 0;
 
-    // Load all 82 frames concurrently
+    const onImageDone = (img, index, isSuccess = true) => {
+      if (isCancelled) return;
+      if (isSuccess && img && img.naturalWidth > 0) {
+        imagesRef.current[index] = img;
+      }
+      loadedCount++;
+      const percent = Math.round((loadedCount / TOTAL_FRAMES) * 100);
+      setLoadPercent(percent);
+
+      if (index === 0 && isSuccess) {
+        setIsLoaded(true);
+        renderFrame(0, true);
+      } else if (Math.round(currentFrameRef.current) === index) {
+        renderFrame(index, true);
+      }
+
+      // Unlock UI as soon as first frames or frame 0 are ready
+      if (loadedCount >= 5 || imagesRef.current[0]) {
+        setIsLoaded(true);
+      }
+    };
+
+    // Safety timeout: never block the user for more than 1.5s even on slow connections
+    const fallbackTimer = setTimeout(() => {
+      if (!isCancelled) {
+        setIsLoaded(true);
+        renderFrame(0, true);
+      }
+    }, 1500);
+
+    // Eagerly load all frames
     for (let i = 0; i < TOTAL_FRAMES; i++) {
       const img = new Image();
+      img.onload = () => onImageDone(img, i, true);
+      img.onerror = () => onImageDone(null, i, false);
       img.src = getFramePath(i);
-      img.onload = () => {
-        if (isCancelled) return;
-        imagesRef.current[i] = img;
-        loadedCount++;
-        const percent = Math.round((loadedCount / TOTAL_FRAMES) * 100);
-        setLoadPercent(percent);
 
-        // As soon as first frame is ready, render it immediately
-        if (i === 0) {
-          setIsLoaded(true);
-          renderFrame(0, true);
-        } else if (Math.round(currentFrameRef.current) === i) {
-          renderFrame(i, true);
-        }
-
-        if (loadedCount >= 10) {
-          setIsLoaded(true);
-        }
-      };
-      img.onerror = () => {};
+      if (img.complete) {
+        onImageDone(img, i, img.naturalWidth > 0);
+      }
     }
 
     return () => {
       isCancelled = true;
+      clearTimeout(fallbackTimer);
     };
   }, [renderFrame]);
 
