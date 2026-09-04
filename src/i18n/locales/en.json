@@ -16,6 +16,8 @@
   "mostPopular": {
     "title": "Most Popular",
     "searchPlaceholder": "Car search",
+    "rent": "Rent",
+    "rentFrom": "Rent is from aed",
     "perDay": "per day",
     "viewAll": "VIEW ALL"
   },

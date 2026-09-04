@@ -16,6 +16,8 @@
   "mostPopular": {
     "title": "Популярные авто",
     "searchPlaceholder": "Поиск авто",
+    "rent": "Аренда",
+    "rentFrom": "Аренда от",
     "perDay": "в день",
     "viewAll": "ПОКАЗАТЬ ВСЕ"
   },

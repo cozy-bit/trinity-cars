@@ -7,12 +7,6 @@ export const Hero = () => {
   const { t } = useTranslation();
   const heroSectionRef = useRef(null);
   const [scrollProgress, setScrollProgress] = useState(0);
-  const [activeSlide, setActiveSlide] = useState(0);
-
-  const slides = [
-    { city: 'Dubai', subtitle: 'LUXURY CAR RENTAL' },
-    { city: 'Dubai', subtitle: 'EXCLUSIVE SUPERCARS' },
-  ];
 
   // Scroll tracking to calculate Hero section progress (0.0 to 1.0)
   useEffect(() => {
@@ -164,16 +158,16 @@ export const Hero = () => {
           }}
         >
           <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-extrabold text-white tracking-tight drop-shadow-[0_10px_40px_rgba(0,0,0,0.9)] font-sans">
-            {t('hero.city', slides[activeSlide].city)}
+            {t('hero.city', 'Dubai')}
           </h1>
           <p className="text-xs sm:text-sm md:text-base font-bold tracking-[0.3em] md:tracking-[0.45em] text-gray-200 mt-2 md:mt-3 uppercase drop-shadow-lg">
-            {t('hero.subtitle', slides[activeSlide].subtitle)}
+            {t('hero.subtitle', 'LUXURY CAR RENTAL')}
           </p>
         </div>
 
-        {/* Bottom Controls (Slider Indicators & Floating Messengers) */}
+        {/* Bottom Controls (Floating Messengers) */}
         <div
-          className={`relative z-20 w-full flex items-end justify-between max-w-7xl mx-auto px-6 md:px-12 pb-8 sm:pb-12 transition-all duration-500 ${
+          className={`relative z-20 w-full flex items-end justify-end max-w-7xl mx-auto px-6 md:px-12 pb-8 sm:pb-12 transition-all duration-500 ${
             revealProgress > 0.5 ? 'pointer-events-auto' : 'pointer-events-none'
           }`}
           style={{
@@ -181,32 +175,8 @@ export const Hero = () => {
             transform: `translateY(${(1 - revealProgress) * 20}px)`,
           }}
         >
-          {/* Left spacer to keep slider dots centered on tablet/desktop */}
-          <div className="w-14 sm:w-28 hidden sm:block pointer-events-none" />
-
-          {/* Center: Slider Dots Indicators */}
-          <div className="flex flex-col items-center gap-4 mx-auto sm:mx-0">
-            <div className="flex items-center gap-2.5 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
-              {slides.map((_, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setActiveSlide(idx)}
-                  className={`transition-all duration-300 rounded-full cursor-pointer ${
-                    activeSlide === idx
-                      ? 'w-6 h-2 bg-brand-cyan shadow-[0_0_10px_var(--color-brand-cyan)]'
-                      : 'w-2 h-2 bg-white/40 hover:bg-white/70'
-                  }`}
-                  aria-label={`Go to slide ${idx + 1}`}
-                />
-              ))}
-            </div>
-
-            {/* Minimalist vertical line indicator */}
-            <div className="w-[1px] h-6 bg-gradient-to-b from-brand-cyan/80 to-transparent" />
-          </div>
-
           {/* Right: Floating Messengers (Telegram & WhatsApp) */}
-          <div className="flex sm:flex-col items-center gap-3">
+          <div className="flex sm:flex-col items-center gap-3 ml-auto">
             <a
               href="https://t.me/"
               target="_blank"
