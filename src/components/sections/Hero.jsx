@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Send, MessageCircle, ChevronDown, FastForward } from 'lucide-react';
+import { useLocation } from '../../context/LocationContext';
 import { CanvasSequence } from './CanvasSequence';
 
 export const Hero = () => {
   const { t } = useTranslation();
+  const { selectedCity, location } = useLocation();
   const heroSectionRef = useRef(null);
   const [scrollProgress, setScrollProgress] = useState(0);
 
@@ -90,17 +92,17 @@ export const Hero = () => {
   }, []);
 
   // Calculate UI opacities based on scrollytelling progress
-  // 1. Initial Hint ("Scroll down to reveal"): visible from 0 to 0.18
-  const hintOpacity = Math.max(0, 1 - scrollProgress / 0.18);
+  // 1. Initial Hint (Arrow): visible from 0 to 0.15
+  const hintOpacity = Math.max(0, 1 - scrollProgress / 0.15);
 
-  // 2. Final Branding UI ("Dubai", subtitle, controls): smoothly appears from 0.50 to 0.90
-  const revealProgress = Math.min(1, Math.max(0, (scrollProgress - 0.5) / 0.4));
+  // 2. Final Branding UI ("Dubai", subtitle, controls): smoothly appears from 0.25 to 0.75
+  const revealProgress = Math.min(1, Math.max(0, (scrollProgress - 0.25) / 0.5));
 
   return (
     <section
       id="hero"
       ref={heroSectionRef}
-      className="relative w-full h-[170vh] -mt-20 bg-[#0d0f11]"
+      className="relative w-full h-[125vh] sm:h-[135vh] lg:h-[145vh] -mt-20 bg-[#0d0f11]"
     >
       {/* Sticky Fullscreen Viewport */}
       <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between select-none">
@@ -114,26 +116,22 @@ export const Hero = () => {
         {/* Top spacer (reserves space for fixed header) */}
         <div className="w-full h-24 sm:h-28 z-20 pointer-events-none" />
 
-        {/* 1. INITIAL PHASE UI: Floating "Scroll down to reveal" cue */}
+        {/* 1. INITIAL PHASE UI: Floating scroll indicator (Arrow only) */}
         <div
-          className="absolute inset-x-0 bottom-12 z-20 flex flex-col items-center justify-center transition-all duration-300 pointer-events-none"
+          className="absolute inset-x-0 bottom-8 sm:bottom-10 z-20 flex flex-col items-center justify-center transition-all duration-300 pointer-events-none"
           style={{
             opacity: hintOpacity,
             transform: `translateY(${(1 - hintOpacity) * -15}px)`,
           }}
         >
-          <div className="flex flex-col items-center gap-2 px-5 py-2.5 rounded-full bg-black/40 backdrop-blur-md border border-white/10 shadow-2xl">
-            <span className="text-xs uppercase tracking-[0.25em] text-gray-300 font-semibold flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-brand-cyan animate-pulse shadow-[0_0_8px_var(--color-brand-cyan)]" />
-              Scroll to reveal
-            </span>
-            <ChevronDown className="w-4 h-4 text-brand-cyan animate-bounce" />
+          <div className="flex items-center justify-center w-10 sm:w-14 h-10 sm:h-14 rounded-full bg-black/40 backdrop-blur-md border border-white/10 shadow-2xl">
+            <ChevronDown className="w-5 h-5 sm:w-6 sm:h-6 text-brand-cyan animate-bounce" />
           </div>
         </div>
 
-        {/* 2. SKIP INTRO BUTTON (Glassmorphism, hover #29b6b6) */}
+        {/* 2. SKIP INTRO BUTTON (Glassmorphism, hover #29b6b6, equalized height on tablet/desktop) */}
         <div
-          className="absolute bottom-8 right-6 md:right-12 z-30 transition-all duration-300 pointer-events-auto"
+          className="absolute bottom-8 sm:bottom-10 right-4 sm:right-8 md:right-12 z-30 transition-all duration-300 pointer-events-auto flex items-center"
           style={{
             opacity: Math.max(0, 1 - (scrollProgress - 0.5) / 0.3),
             pointerEvents: scrollProgress > 0.8 ? 'none' : 'auto',
@@ -141,7 +139,7 @@ export const Hero = () => {
         >
           <button
             onClick={handleSkipIntro}
-            className="flex items-center gap-2 px-4 py-2 rounded-full bg-black/50 hover:bg-black/80 backdrop-blur-md border border-white/20 hover:border-[#29b6b6] text-xs font-semibold uppercase tracking-widest text-gray-200 hover:text-[#29b6b6] transition-all duration-300 shadow-xl hover:shadow-[0_0_20px_rgba(41,182,182,0.35)] group cursor-pointer"
+            className="flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 h-10 sm:h-14 rounded-full bg-black/50 hover:bg-black/80 backdrop-blur-md border border-white/20 hover:border-[#29b6b6] text-[11px] sm:text-xs font-semibold uppercase tracking-widest text-gray-200 hover:text-[#29b6b6] transition-all duration-300 shadow-xl hover:shadow-[0_0_20px_rgba(41,182,182,0.35)] group cursor-pointer"
             aria-label="Skip intro animation"
           >
             <span>Skip Intro</span>
@@ -157,8 +155,8 @@ export const Hero = () => {
             transform: `translateY(${(1 - revealProgress) * 30}px)`,
           }}
         >
-          <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-extrabold text-white tracking-tight drop-shadow-[0_10px_40px_rgba(0,0,0,0.9)] font-sans">
-            {t('hero.city', 'Dubai')}
+          <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-extrabold text-white tracking-tight drop-shadow-[0_10px_40px_rgba(0,0,0,0.9)] font-sans uppercase">
+            {selectedCity}
           </h1>
           <p className="text-xs sm:text-sm md:text-base font-bold tracking-[0.3em] md:tracking-[0.45em] text-gray-200 mt-2 md:mt-3 uppercase drop-shadow-lg">
             {t('hero.subtitle', 'LUXURY CAR RENTAL')}
@@ -188,7 +186,7 @@ export const Hero = () => {
             </a>
 
             <a
-              href="https://wa.me/971585907875"
+              href={`https://wa.me/${location.phoneRaw ? location.phoneRaw.replace('+', '') : '971585907875'}`}
               target="_blank"
               rel="noopener noreferrer"
               className="w-11 h-11 rounded-full bg-[#25d366] flex items-center justify-center text-white hover:scale-110 active:scale-95 transition-transform duration-200 shadow-lg shadow-[#25d366]/40 cursor-pointer"

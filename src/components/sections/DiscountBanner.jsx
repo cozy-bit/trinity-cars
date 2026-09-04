@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Check } from 'lucide-react';
+import { Check, Mail } from 'lucide-react';
 import { Button } from '../ui/Button';
-import radialBg from '../../assets/images/radial.png';
+import radialLeftBg from '../../assets/images/radial-left.png';
+import radialRightBg from '../../assets/images/radial-right.png';
 import neonDotsBg from '../../assets/images/neon-dots.png';
 
 export const DiscountBanner = () => {
@@ -19,57 +20,68 @@ export const DiscountBanner = () => {
   };
 
   return (
-    <section id="discount" className="w-full py-12 md:py-20 px-6 md:px-12">
-      <div className="max-w-7xl mx-auto relative rounded-3xl bg-[#141619] border border-[#23272d] p-8 sm:p-12 md:p-16 overflow-hidden shadow-2xl">
-        {/* Radial Glow Background in Center */}
+    <section id="discount" className="relative overflow-visible max-w-xl md:max-w-3xl lg:max-w-5xl mx-auto px-6 sm:px-8 md:px-10 lg:px-4 py-10 md:py-14 lg:py-16">
+      {/* Decorative Neon Dots Pattern OUTSIDE the card in bottom-right position */}
+      <img
+        src={neonDotsBg}
+        alt=""
+        className="absolute -right-3 -bottom-4 sm:-right-4 sm:-bottom-4 md:-right-6 md:-bottom-2 lg:-right-16 lg:bottom-0 pointer-events-none z-20 w-28 sm:w-36 md:w-40 lg:w-44 object-contain opacity-90 select-none"
+      />
+
+      {/* Main Banner Card */}
+      <div className="relative z-10 rounded-2xl md:rounded-[28px] bg-[#131518] border border-[#22262c] overflow-hidden shadow-2xl">
+        {/* Radial Lines Left */}
         <img
-          src={radialBg}
+          src={radialLeftBg}
           alt=""
-          className="absolute inset-0 m-auto w-full h-full object-cover sm:object-contain opacity-75 pointer-events-none mix-blend-screen"
+          className="absolute -left-10 -bottom-10 w-48 sm:w-64 md:w-72 lg:w-80 pointer-events-none opacity-40 select-none"
         />
 
-        {/* Neon Dots Pattern on Right Side */}
+        {/* Radial Lines Right */}
         <img
-          src={neonDotsBg}
+          src={radialRightBg}
           alt=""
-          className="absolute right-0 top-1/2 -translate-y-1/2 h-full w-auto max-w-[50%] object-contain opacity-70 pointer-events-none"
+          className="absolute -right-8 -top-8 w-48 sm:w-64 md:w-72 lg:w-80 pointer-events-none opacity-40 select-none"
         />
 
-        {/* Foreground Content */}
-        <div className="relative z-10 max-w-2xl mx-auto text-center flex flex-col items-center">
-          <h2 className="text-2xl sm:text-3xl md:text-5xl font-extrabold text-white tracking-tight mb-4">
+        {/* Centered Content */}
+        <div className="relative z-10 flex flex-col items-center text-center py-8 sm:py-10 md:py-12 lg:py-16 px-5 sm:px-8 md:px-12">
+          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-2.5 md:mb-3 tracking-tight">
             {t('discount.title', 'Get a discount of up to 60%')}
           </h2>
 
-          <p className="text-gray-300 text-xs sm:text-sm md:text-base mb-8 max-w-lg leading-relaxed">
+          <p className="text-xs sm:text-sm text-gray-400 max-w-md md:max-w-lg mb-6 md:mb-8 leading-relaxed">
             {t(
               'discount.subtitle',
-              'Subscribe to our news and be the first to know about discounts and special offers'
+              "Get the latest articles and business updates that you need to know, you'll even get special recommendations weekly."
             )}
           </p>
 
           {isSubscribed ? (
-            <div className="flex items-center gap-2.5 px-6 py-3.5 bg-brand-cyan/15 border border-brand-cyan text-brand-cyan rounded-xl text-sm font-semibold animate-in fade-in duration-300">
-              <Check className="w-5 h-5" />
+            <div className="flex items-center gap-2.5 px-6 py-3.5 bg-brand-cyan/15 border border-brand-cyan text-brand-cyan rounded-xl text-xs sm:text-sm font-semibold animate-in fade-in duration-300">
+              <Check className="w-4 h-4 sm:w-5 sm:h-5" />
               <span>{t('discount.success', 'You have successfully subscribed to exclusive offers!')}</span>
             </div>
           ) : (
             <form
               onSubmit={handleSubscribe}
-              className="w-full max-w-md flex flex-col sm:flex-row items-center gap-3"
+              className="max-w-md md:max-w-lg w-full flex flex-col sm:flex-row gap-2.5 sm:gap-3"
             >
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder={t('discount.placeholder', 'Your email')}
-                className="w-full sm:flex-1 bg-[#181a1d] text-white placeholder-gray-500 rounded-md px-4 py-3.5 outline-none border border-[#2b2f36] hover:border-gray-600 focus:border-brand-cyan transition-colors duration-200 text-sm"
-              />
+              <div className="relative flex-1">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder={t('discount.placeholder', 'Your email')}
+                  className="w-full bg-[#181a1d] text-white placeholder-gray-500 rounded-xl pl-11 pr-4 py-3 sm:py-3.5 outline-none border border-[#2b2f36] hover:border-gray-600 focus:border-brand-cyan transition-colors duration-200 text-xs sm:text-sm"
+                />
+              </div>
               <Button
                 type="submit"
                 variant="primary"
-                className="w-full sm:w-auto px-8 py-3.5 font-bold tracking-wider"
+                className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-3.5 text-xs font-bold uppercase tracking-wider rounded-xl text-black shadow-lg hover:shadow-[0_0_20px_var(--color-brand-cyan-glow)] active:scale-95"
               >
                 {t('discount.button', 'RECEIVE')}
               </Button>

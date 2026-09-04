@@ -60,6 +60,25 @@
   animation: connectorDraw 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+@keyframes marqueeLeftToRight {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+.animate-marquee-left-to-right {
+  display: flex;
+  width: max-content;
+  animation: marqueeLeftToRight 28s linear infinite;
+}
+
+.animate-marquee-left-to-right:hover {
+  animation-play-state: paused;
+}
+
 .scrollbar-none::-webkit-scrollbar {
   display: none;
 }

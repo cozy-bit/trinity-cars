@@ -21,6 +21,15 @@
     "perDay": "per day",
     "viewAll": "VIEW ALL"
   },
+  "specialOffers": {
+    "title": "Special Offers",
+    "tabs": {
+      "special": "Special Offer",
+      "new": "New car",
+      "popular": "Most popular",
+      "daily": "Daily"
+    }
+  },
   "mapContact": {
     "title": "Ask us anything",
     "namePlaceholder": "Name",

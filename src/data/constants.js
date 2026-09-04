@@ -1,10 +1,53 @@
 export const CITIES_DATA = ['Dubai', 'Moscow', 'Budapest', 'Wiesbaden'];
 
+export const LOCATIONS_DATA = {
+  Dubai: {
+    city: 'Dubai',
+    country: 'UAE',
+    phone: '+971 58 590 7875',
+    phoneRaw: '+971585907875',
+    address: '24 4th St - Al Quoz - Al Quoz Industrial Area 3 - Dubai, UAE',
+    badge: 'Al Quoz, Dubai',
+    mapQuery: 'Al+Quoz+Industrial+Area+3,+Dubai',
+    mapEmbedUrl: 'https://maps.google.com/maps?q=Al+Quoz+Industrial+Area+3,+Dubai&t=&z=13&ie=UTF8&iwloc=&output=embed',
+  },
+  Moscow: {
+    city: 'Moscow',
+    country: 'Russia',
+    phone: '+7 495 590 7875',
+    phoneRaw: '+74955907875',
+    address: 'Presnenskaya Naberezhnaya 12, Moscow City, Moscow',
+    badge: 'Moscow City, Moscow',
+    mapQuery: 'Moscow+City,+Presnenskaya+Embankment,+Moscow',
+    mapEmbedUrl: 'https://maps.google.com/maps?q=Moscow+City,+Presnenskaya+Embankment,+Moscow&t=&z=13&ie=UTF8&iwloc=&output=embed',
+  },
+  Budapest: {
+    city: 'Budapest',
+    country: 'Hungary',
+    phone: '+36 1 590 7875',
+    phoneRaw: '+3615907875',
+    address: 'Andrássy út 25, 1061 Budapest, Hungary',
+    badge: 'Andrássy út, Budapest',
+    mapQuery: 'Andrassy+ut+25,+Budapest,+Hungary',
+    mapEmbedUrl: 'https://maps.google.com/maps?q=Andrassy+ut+25,+Budapest,+Hungary&t=&z=13&ie=UTF8&iwloc=&output=embed',
+  },
+  Wiesbaden: {
+    city: 'Wiesbaden',
+    country: 'Germany',
+    phone: '+49 611 590 7875',
+    phoneRaw: '+496115907875',
+    address: 'Wilhelmstraße 14, 65185 Wiesbaden, Germany',
+    badge: 'Wilhelmstraße, Wiesbaden',
+    mapQuery: 'Wilhelmstrasse+14,+Wiesbaden,+Germany',
+    mapEmbedUrl: 'https://maps.google.com/maps?q=Wilhelmstrasse+14,+Wiesbaden,+Germany&t=&z=13&ie=UTF8&iwloc=&output=embed',
+  },
+};
+
 export const POPULAR_CARS_DATA = [
   {
     id: 'audi-rs6',
     brand: 'Audi',
-    model: 'RS6 Avant',
+    model: 'Huracan EVO Spyder RS6',
     name: 'Audi RS6 Avant',
     price: '1 800$',
     period: 'per day',
@@ -38,11 +81,11 @@ export const POPULAR_CARS_DATA = [
     image: '/images/cars/ferrari-roma.png',
   },
   {
-    id: 'rr-ghost',
-    brand: 'Rolls-Royce',
-    model: 'Ghost',
-    name: 'Rolls-Royce Ghost',
-    price: '3 200$',
+    id: 'range-rover',
+    brand: 'Range Rover',
+    model: 'Autobiography New 2022',
+    name: 'Range Rover Autobiography',
+    price: '2 200$',
     period: 'per day',
     image: '/images/cars/rolls-royce-ghost.png',
   },

@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CheckCircle2, MapPin } from 'lucide-react';
+import { CheckCircle2, MapPin, Globe } from 'lucide-react';
+import { useLocation } from '../../context/LocationContext';
 import { Input } from '../ui/Input';
 import { Button } from '../ui/Button';
 
 export const MapContact = () => {
   const { t } = useTranslation();
+  const { selectedCity, setSelectedCity, location, allLocations } = useLocation();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -30,10 +32,37 @@ export const MapContact = () => {
   return (
     <section id="map-contact" className="w-full py-16 md:py-24 px-6 md:px-12">
       <div className="max-w-7xl mx-auto">
-        {/* Section Heading */}
-        <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white mb-8 md:mb-12 tracking-tight">
-          {t('mapContact.title', 'Ask us anything')}
-        </h2>
+        {/* Section Heading & City Selector Tabs */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 md:mb-12">
+          <div>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white tracking-tight">
+              {t('mapContact.title', 'Ask us anything')}
+            </h2>
+            <p className="text-gray-400 text-xs sm:text-sm mt-2">
+              {location.address}
+            </p>
+          </div>
+
+          {/* City Selection Tabs */}
+          <div className="flex items-center gap-2 bg-[#141619] p-1.5 rounded-2xl border border-[#23272d] overflow-x-auto scrollbar-none">
+            {Object.keys(allLocations).map((cityName) => {
+              const isSelected = selectedCity === cityName;
+              return (
+                <button
+                  key={cityName}
+                  onClick={() => setSelectedCity(cityName)}
+                  className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-300 cursor-pointer whitespace-nowrap ${
+                    isSelected
+                      ? 'bg-brand-cyan text-black shadow-[0_0_15px_rgba(41,182,182,0.4)]'
+                      : 'text-gray-400 hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  {cityName}
+                </button>
+              );
+            })}
+          </div>
+        </div>
 
         {/* 2-Column Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
@@ -42,14 +71,16 @@ export const MapContact = () => {
             {/* Map Location Badge */}
             <div className="absolute top-4 left-4 z-10 bg-[#0d0f11]/90 backdrop-blur-md border border-[#23272d] px-3.5 py-2 rounded-xl flex items-center gap-2 text-xs font-medium text-white shadow-lg pointer-events-none">
               <MapPin className="w-4 h-4 text-brand-cyan" />
-              <span>Al Quoz, Dubai</span>
+              <span>{location.badge}</span>
+              <span className="text-gray-500 font-normal">({location.country})</span>
             </div>
 
             {/* Embedded Google Map with Dark Theme CSS Inversion Filter */}
             <iframe
-              title="Dubai Map"
-              src="https://maps.google.com/maps?q=Al+Quoz+Industrial+Area+3,+Dubai&t=&z=13&ie=UTF8&iwloc=&output=embed"
-              className="w-full h-full min-h-[380px] flex-1 border-0"
+              key={location.city}
+              title={`${location.city} Map`}
+              src={location.mapEmbedUrl}
+              className="w-full h-full min-h-[380px] flex-1 border-0 transition-opacity duration-300"
               style={{
                 filter: 'invert(92%) hue-rotate(180deg) contrast(1.1) brightness(0.95)',
               }}
@@ -94,7 +125,10 @@ export const MapContact = () => {
                   type="tel"
                   name="phone"
                   value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  onChange={(e) => {
+                    const onlyNumbers = e.target.value.replace(/[^\d+]/g, '').replace(/(?!^)\+/g, '');
+                    setFormData({ ...formData, phone: onlyNumbers });
+                  }}
                   placeholder={t('mapContact.phonePlaceholder', 'Phone')}
                   required
                 />
