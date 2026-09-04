@@ -102,7 +102,7 @@ export const Hero = () => {
     <section
       id="hero"
       ref={heroSectionRef}
-      className="relative w-full h-[250vh] -mt-20 bg-[#0d0f11]"
+      className="relative w-full h-[250vh] bg-[#0d0f11]"
     >
       {/* Sticky Fullscreen Viewport */}
       <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between select-none">

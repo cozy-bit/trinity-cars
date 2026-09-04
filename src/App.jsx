@@ -26,10 +26,10 @@ function App() {
 
   return (
     <LocationProvider>
-      <div className="min-h-screen bg-[#0d0f11] text-white selection:bg-brand-cyan selection:text-black overflow-x-hidden">
+      <div className="min-h-screen bg-[#0d0f11] text-white selection:bg-brand-cyan selection:text-black overflow-x-clip">
         <Header />
 
-        <main className="pt-20">
+        <main>
           <Hero />
           <MostPopular />
 
