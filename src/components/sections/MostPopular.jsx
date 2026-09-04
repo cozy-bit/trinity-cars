@@ -1,8 +1,13 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Search, ChevronUp, ChevronDown } from 'lucide-react';
+import { Button } from '../ui/Button';
 import { POPULAR_CARS_DATA } from '../../data/constants';
 import defaultCarImg from '../../assets/images/most-popular-huracan.png';
+
+const ITEM_HEIGHT = 76; // Height of each car item in px
+const CONTAINER_HEIGHT = 380; // Total height of the carousel viewport
+const CENTER_OFFSET = (CONTAINER_HEIGHT - ITEM_HEIGHT) / 2; // Vertical center offset (152px)
 
 export const MostPopular = () => {
   const { t } = useTranslation();
@@ -10,35 +15,54 @@ export const MostPopular = () => {
   const [selectedCarId, setSelectedCarId] = useState(
     POPULAR_CARS_DATA.find((c) => c.id === 'huracan-evo')?.id || POPULAR_CARS_DATA[0]?.id
   );
-  const selectedItemRef = useRef(null);
-  const listContainerRef = useRef(null);
+  const activeModelRef = useRef(null);
+  const [modelLineWidth, setModelLineWidth] = useState(70);
 
-  const filteredCars = POPULAR_CARS_DATA.filter((car) =>
-    car.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    car.brand.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (car.model && car.model.toLowerCase().includes(searchQuery.toLowerCase()))
-  );
+  const filteredCars = useMemo(() => {
+    return POPULAR_CARS_DATA.filter((car) =>
+      car.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      car.brand.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (car.model && car.model.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
+  }, [searchQuery]);
 
-  const selectedCar =
-    filteredCars.find((car) => car.id === selectedCarId) ||
-    filteredCars[0] ||
-    POPULAR_CARS_DATA[0];
-
-  // Auto scroll to selected car in list if it's outside view
+  // Keep selected car valid when filtered
   useEffect(() => {
-    if (selectedItemRef.current && listContainerRef.current) {
-      selectedItemRef.current.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest',
-      });
+    if (filteredCars.length > 0) {
+      const exists = filteredCars.some((c) => c.id === selectedCarId);
+      if (!exists) {
+        setSelectedCarId(filteredCars[0].id);
+      }
     }
-  }, [selectedCarId]);
+  }, [filteredCars, selectedCarId]);
+
+  const activeIndex = useMemo(() => {
+    const idx = filteredCars.findIndex((c) => c.id === selectedCarId);
+    return idx >= 0 ? idx : 0;
+  }, [filteredCars, selectedCarId]);
+
+  const selectedCar = filteredCars[activeIndex] || POPULAR_CARS_DATA[0];
+
+  // Dynamically measure active car model text length for pixel-perfect line matching
+  useEffect(() => {
+    const updateLineWidth = () => {
+      if (activeModelRef.current) {
+        const width = activeModelRef.current.offsetWidth;
+        if (width > 0) {
+          setModelLineWidth(width);
+        }
+      }
+    };
+
+    updateLineWidth();
+    const frameId = requestAnimationFrame(updateLineWidth);
+    return () => cancelAnimationFrame(frameId);
+  }, [selectedCarId, searchQuery, filteredCars]);
 
   const handlePrevCar = () => {
     if (!filteredCars.length) return;
-    const currentIndex = filteredCars.findIndex((c) => c.id === selectedCar.id);
-    if (currentIndex > 0) {
-      setSelectedCarId(filteredCars[currentIndex - 1].id);
+    if (activeIndex > 0) {
+      setSelectedCarId(filteredCars[activeIndex - 1].id);
     } else {
       setSelectedCarId(filteredCars[filteredCars.length - 1].id);
     }
@@ -46,31 +70,30 @@ export const MostPopular = () => {
 
   const handleNextCar = () => {
     if (!filteredCars.length) return;
-    const currentIndex = filteredCars.findIndex((c) => c.id === selectedCar.id);
-    if (currentIndex < filteredCars.length - 1) {
-      setSelectedCarId(filteredCars[currentIndex + 1].id);
+    if (activeIndex < filteredCars.length - 1) {
+      setSelectedCarId(filteredCars[activeIndex + 1].id);
     } else {
       setSelectedCarId(filteredCars[0].id);
     }
   };
 
   return (
-    <section id="most-popular" className="w-full py-16 md:py-24 px-6 md:px-12 bg-[#0d0f11]">
+    <section id="most-popular" className="w-full pt-6 sm:pt-10 md:pt-14 pb-16 md:pb-24 px-6 md:px-12 bg-[#0d0f11]">
       <div className="max-w-7xl mx-auto">
         {/* 2-Column Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-          {/* Left Column: Big Featured Car Photo Card */}
-          <div className="lg:col-span-7 bg-[#141619] rounded-[28px] border border-[#23272d]/80 overflow-hidden relative shadow-2xl min-h-[440px] sm:min-h-[500px] lg:h-[540px] xl:h-[560px] flex flex-col justify-end group">
+          {/* Left Column: Big Featured Car Photo Card with Crisp Rounded Corners on all 4 sides */}
+          <div className="lg:col-span-7 bg-[#141619] rounded-[28px] border border-[#2c313a] overflow-hidden relative shadow-[0_20px_50px_rgba(0,0,0,0.7)] min-h-[440px] sm:min-h-[500px] lg:h-[540px] xl:h-[560px] flex flex-col justify-end group isolate">
             {/* Background Car Image with smooth zoom & fade animation */}
             <img
               key={`img-${selectedCar.id}`}
               src={selectedCar.image || defaultCarImg}
               alt={selectedCar.name}
-              className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 select-none animate-car-image"
+              className="absolute inset-0 w-full h-full object-cover rounded-[28px] transition-opacity duration-300 select-none animate-car-image"
             />
 
             {/* Dark Gradient Overlay for optimal text readability */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/35 to-transparent pointer-events-none" />
+            <div className="absolute inset-0 rounded-[28px] bg-gradient-to-t from-[#090b0d]/90 via-[#090b0d]/35 to-transparent pointer-events-none" />
 
             {/* Bottom Content Overlay */}
             <div className="relative z-10 p-6 sm:p-8 md:p-10 flex flex-col sm:flex-row sm:items-end justify-between gap-4 w-full">
@@ -99,7 +122,7 @@ export const MostPopular = () => {
             </div>
           </div>
 
-          {/* Right Column: Title, Search, and Timeline Navigation List */}
+          {/* Right Column: Title, Search, and Ferris Wheel Interactive Navigation */}
           <div className="lg:col-span-5 flex flex-col justify-center">
             {/* Section Heading */}
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white mb-6 tracking-tight">
@@ -118,122 +141,167 @@ export const MostPopular = () => {
               <Search className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
             </div>
 
-            {/* Timeline & Car Items List */}
-            <div className="relative flex items-stretch gap-7 pl-1 mt-2">
-              {/* Left Vertical Track with Circular Top/Bottom Chevrons */}
-              <div className="flex flex-col items-center justify-between w-8 py-1 select-none flex-shrink-0">
+            {/* Wheel Arc Navigation Container */}
+            <div
+              className="relative flex items-center gap-6 select-none pl-1"
+              style={{ height: `${CONTAINER_HEIGHT}px` }}
+            >
+              {/* Left Vertical Track with Top/Bottom Chevrons & Center Indicator Line */}
+              <div className="relative flex flex-col items-center justify-between h-full w-8 py-1 flex-shrink-0 z-20">
+                {/* Top Chevron Button */}
                 <button
                   onClick={handlePrevCar}
-                  className="w-8 h-8 rounded-full border border-[#2b2f38] bg-[#14161a] flex items-center justify-center text-gray-400 hover:text-white hover:border-brand-cyan transition-all cursor-pointer shadow-sm active:scale-95"
+                  className="w-8 h-8 rounded-full border border-[#2b2f38] bg-[#14161a] flex items-center justify-center text-gray-400 hover:text-white hover:border-brand-cyan transition-all cursor-pointer shadow-sm active:scale-95 z-30"
                   aria-label="Previous car"
                 >
                   <ChevronUp className="w-4 h-4" />
                 </button>
 
                 {/* Continuous Vertical Axis Line */}
-                <div className="w-[1.5px] flex-1 bg-[#262a32] my-3 relative rounded-full" />
+                <div className="w-[2px] flex-1 bg-[#23272d] my-3 relative rounded-full" />
 
+                {/* Bottom Chevron Button */}
                 <button
                   onClick={handleNextCar}
-                  className="w-8 h-8 rounded-full border border-[#2b2f38] bg-[#14161a] flex items-center justify-center text-gray-400 hover:text-white hover:border-brand-cyan transition-all cursor-pointer shadow-sm active:scale-95"
+                  className="w-8 h-8 rounded-full border border-[#2b2f38] bg-[#14161a] flex items-center justify-center text-gray-400 hover:text-white hover:border-brand-cyan transition-all cursor-pointer shadow-sm active:scale-95 z-30"
                   aria-label="Next car"
                 >
                   <ChevronDown className="w-4 h-4" />
                 </button>
+
+                {/* Central Anchor Indicator Dot on Vertical Axis */}
+                <div
+                  className="absolute left-1/2 -translate-x-1/2 pointer-events-none z-30"
+                  style={{ top: `${CENTER_OFFSET + 18}px` }}
+                >
+                  {/* Glowing Cyan Dot with white center */}
+                  <div className="w-4 h-4 rounded-full bg-brand-cyan shadow-[0_0_12px_var(--color-brand-cyan)] border-2 border-[#0d0f11] flex items-center justify-center -translate-x-0.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-white" />
+                  </div>
+                </div>
+
+                {/* Connected Bracket/Underline Line extending to the exact length of the car model */}
+                <div
+                  className="absolute pointer-events-none z-10"
+                  style={{
+                    top: `${CENTER_OFFSET + 25}px`,
+                    left: '15px',
+                  }}
+                >
+                  <svg
+                    className="h-[50px] overflow-visible"
+                    style={{ width: `${Math.max(50, 32 + modelLineWidth + 10)}px` }}
+                    viewBox={`0 0 ${Math.max(50, 32 + modelLineWidth + 10)} 50`}
+                    fill="none"
+                  >
+                    <path
+                      d={`M 0 0 L 32 32 L ${32 + modelLineWidth + 6} 32`}
+                      stroke="#27353a"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="transition-all duration-300 ease-out"
+                    />
+                    <path
+                      d={`M 0 0 L 32 32 L ${32 + modelLineWidth + 6} 32`}
+                      stroke="#29b6b6"
+                      strokeWidth="1.5"
+                      strokeOpacity="0.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="transition-all duration-300 ease-out"
+                    />
+                  </svg>
+                </div>
               </div>
 
-              {/* Models List */}
-              <div
-                ref={listContainerRef}
-                className="flex-1 flex flex-col gap-5 max-h-[360px] overflow-y-auto scrollbar-none py-2 pr-2"
-              >
-                {filteredCars.length > 0 ? (
-                  filteredCars.map((car) => {
-                    const isSelected = selectedCar.id === car.id;
-                    return (
-                      <div
-                        key={car.id}
-                        ref={isSelected ? selectedItemRef : null}
-                        className="relative"
-                      >
-                        <button
-                          onClick={() => setSelectedCarId(car.id)}
-                          className="group relative flex flex-col text-left py-1 transition-all duration-300 cursor-pointer w-full focus:outline-none"
-                        >
-                          <span
-                            className={`text-lg sm:text-xl font-bold tracking-tight transition-all duration-300 ${
-                              isSelected
-                                ? 'text-brand-cyan font-black scale-[1.02] origin-left'
-                                : 'text-white/95 group-hover:text-white'
-                            }`}
-                          >
-                            {car.brand}
-                          </span>
-                          <span
-                            className={`text-xs sm:text-sm transition-all duration-300 mt-0.5 ${
-                              isSelected
-                                ? 'text-brand-cyan/90 font-medium'
-                                : 'text-gray-500 group-hover:text-gray-400'
-                            }`}
-                          >
-                            {car.model || car.name}
-                          </span>
-                        </button>
+              {/* Items Viewport with Fade Gradients and Wheel Arc Translation */}
+              <div className="relative flex-1 h-full overflow-hidden">
+                {/* Top Gradient Fade */}
+                <div className="absolute top-0 inset-x-0 h-10 bg-gradient-to-b from-[#0d0f11] to-transparent pointer-events-none z-10" />
 
-                        {/* Active timeline branch connector line + glowing dot */}
-                        {isSelected && (
-                          <div className="absolute -left-[43px] top-0 bottom-0 flex items-center pointer-events-none overflow-visible">
-                            <svg
-                              className="w-[300px] h-[58px] overflow-visible"
-                              viewBox="0 0 300 58"
-                              fill="none"
+                {/* Bottom Gradient Fade */}
+                <div className="absolute bottom-0 inset-x-0 h-10 bg-gradient-to-t from-[#0d0f11] to-transparent pointer-events-none z-10" />
+
+                {/* Sliding Items Container (Translates vertically to center active item) */}
+                <div
+                  className="relative w-full transition-transform duration-500 ease-out"
+                  style={{
+                    transform: `translateY(${CENTER_OFFSET - activeIndex * ITEM_HEIGHT}px)`,
+                  }}
+                >
+                  {filteredCars.length > 0 ? (
+                    filteredCars.map((car, idx) => {
+                      const dist = Math.abs(idx - activeIndex);
+                      const isSelected = idx === activeIndex;
+
+                      // Half-wheel arc shift (curved rightwards based on distance)
+                      const offsetX = dist === 0 ? 0 : dist === 1 ? 28 : dist === 2 ? 56 : dist === 3 ? 84 : 110;
+                      const opacity = dist === 0 ? 1 : dist === 1 ? 0.6 : dist === 2 ? 0.35 : dist === 3 ? 0.15 : 0.05;
+                      const scale = dist === 0 ? 1.05 : dist === 1 ? 0.96 : dist === 2 ? 0.88 : 0.8;
+
+                      return (
+                        <div
+                          key={car.id}
+                          className="flex items-center"
+                          style={{
+                            height: `${ITEM_HEIGHT}px`,
+                          }}
+                        >
+                          <button
+                            onClick={() => setSelectedCarId(car.id)}
+                            className="group relative flex flex-col text-left transition-all duration-500 ease-out cursor-pointer origin-left focus:outline-none"
+                            style={{
+                              transform: `translateX(${offsetX}px) scale(${scale})`,
+                              opacity: opacity,
+                            }}
+                          >
+                            <span
+                              className={`text-xl sm:text-2xl font-black tracking-tight transition-colors duration-300 ${
+                                isSelected
+                                  ? 'text-brand-cyan drop-shadow-[0_0_12px_rgba(41,182,182,0.35)]'
+                                  : 'text-white/90 group-hover:text-white'
+                              }`}
                             >
-                              {/* Outer Cyan Glow Circle on the vertical line */}
-                              <circle
-                                cx="0"
-                                cy="15"
-                                r="5.5"
-                                fill="#29b6b6"
-                                className="drop-shadow-[0_0_8px_rgba(41,182,182,0.95)]"
-                              />
-                              {/* Inner White Dot */}
-                              <circle cx="0" cy="15" r="2.5" fill="#ffffff" />
-                              {/* Diagonal connector path extending into underline */}
-                              <path
-                                d="M 0 15 L 14 15 L 28 44 L 200 44"
-                                stroke="#29b6b6"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                className="animate-connector-line drop-shadow-[0_0_6px_rgba(41,182,182,0.45)]"
-                              />
-                            </svg>
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })
-                ) : (
-                  <div className="py-8 text-center text-gray-500 text-sm">
-                    No models found for "{searchQuery}"
-                  </div>
-                )}
+                              {car.brand}
+                            </span>
+                            <span
+                              ref={isSelected ? activeModelRef : null}
+                              className={`text-xs sm:text-sm font-medium transition-colors duration-300 mt-0.5 inline-block w-fit ${
+                                isSelected
+                                  ? 'text-brand-cyan font-bold'
+                                  : 'text-gray-400 group-hover:text-gray-300'
+                              }`}
+                            >
+                              {car.model || car.name}
+                            </span>
+                          </button>
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <div className="py-20 text-center text-gray-500 text-sm">
+                      No models found for "{searchQuery}"
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
             {/* VIEW ALL Button */}
-            <div className="mt-8 pl-15">
-              <button
+            <div className="mt-8 pl-14">
+              <Button
+                variant="primary"
+                className="px-8 py-3.5 text-xs font-bold uppercase tracking-widest rounded-xl text-white shadow-lg hover:shadow-[0_0_20px_rgba(41,182,182,0.4)]"
                 onClick={() => {
                   const specialOffersSection = document.getElementById('special-offers');
                   if (specialOffersSection) {
                     specialOffersSection.scrollIntoView({ behavior: 'smooth' });
                   }
                 }}
-                className="px-8 py-3.5 bg-brand-cyan hover:bg-brand-cyan-hover text-white font-bold text-xs uppercase tracking-widest rounded-xl transition-all shadow-lg hover:shadow-[0_0_20px_rgba(41,182,182,0.4)] cursor-pointer active:scale-95"
               >
                 {t('mostPopular.viewAll', 'VIEW ALL')}
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -241,3 +309,4 @@ export const MostPopular = () => {
     </section>
   );
 };
+

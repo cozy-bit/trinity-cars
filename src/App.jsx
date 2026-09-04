@@ -1,3 +1,6 @@
+import { useEffect } from "react";
+import { LocationProvider } from "./context/LocationContext";
+
 // Layout
 import { Header } from "./components/layout/Header";
 import { Footer } from "./components/layout/Footer";
@@ -13,26 +16,36 @@ import { MapContact } from "./components/sections/MapContact";
 import { DiscountBanner } from "./components/sections/DiscountBanner";
 
 function App() {
+  // Prevent browser auto-scrolling on page reload / refresh
+  useEffect(() => {
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
-    <div className="min-h-screen bg-[#0d0f11] text-white selection:bg-brand-cyan selection:text-black">
-      <Header />
+    <LocationProvider>
+      <div className="min-h-screen bg-[#0d0f11] text-white selection:bg-brand-cyan selection:text-black overflow-x-clip">
+        <Header />
 
-      <main className="pt-20">
-        <Hero />
-        <MostPopular />
+        <main>
+          <Hero />
+          <MostPopular />
 
-        {/* Блоки Бахтовара */}
-        <SpecialOffers />
-        <AboutUs />
+          {/* Блоки Бахтовара */}
+          <SpecialOffers />
+          <AboutUs />
 
-        <Reviews />
-        <Advantages />
-        <MapContact />
-        <DiscountBanner />
-      </main>
+          <Reviews />
+          <Advantages />
+          <MapContact />
+          <DiscountBanner />
+        </main>
 
-      <Footer />
-    </div>
+        <Footer />
+      </div>
+    </LocationProvider>
   );
 }
 
