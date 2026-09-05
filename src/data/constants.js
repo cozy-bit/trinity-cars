@@ -51,7 +51,7 @@ export const POPULAR_CARS_DATA = [
     name: 'Audi RS6 Avant',
     price: '1 800$',
     period: 'per day',
-    image: '/images/cars/audi-rs6.png',
+    image: '/images/cars/audi-rs6.webp',
   },
   {
     id: 'lamborghini-urus',
@@ -60,7 +60,7 @@ export const POPULAR_CARS_DATA = [
     name: 'Lamborghini Urus',
     price: '2 600$',
     period: 'per day',
-    image: '/images/cars/lamborghini-urus.png',
+    image: '/images/cars/lamborghini-urus.webp',
   },
   {
     id: 'huracan-evo',
@@ -69,7 +69,7 @@ export const POPULAR_CARS_DATA = [
     name: 'Lamborghini Huracan EVO Spyder',
     price: '2 400$',
     period: 'per day',
-    image: '/images/cars/lamborghini-huracan-evo.png',
+    image: '/images/cars/lamborghini-huracan-evo.webp',
   },
   {
     id: 'ferrari-roma',
@@ -78,7 +78,7 @@ export const POPULAR_CARS_DATA = [
     name: 'Ferrari Roma',
     price: '2 800$',
     period: 'per day',
-    image: '/images/cars/ferrari-roma.png',
+    image: '/images/cars/ferrari-roma.webp',
   },
   {
     id: 'range-rover',
@@ -87,7 +87,7 @@ export const POPULAR_CARS_DATA = [
     name: 'Range Rover Autobiography',
     price: '2 200$',
     period: 'per day',
-    image: '/images/cars/rolls-royce-ghost.png',
+    image: '/images/cars/rolls-royce-ghost.webp',
   },
   {
     id: 'bentley-gt',
@@ -96,7 +96,7 @@ export const POPULAR_CARS_DATA = [
     name: 'Bentley Continental GT',
     price: '2 500$',
     period: 'per day',
-    image: '/images/cars/bentley-continental-gt.png',
+    image: '/images/cars/bentley-continental-gt.webp',
   },
   {
     id: 'porsche-911',
@@ -105,7 +105,7 @@ export const POPULAR_CARS_DATA = [
     name: 'Porsche 911 Turbo S',
     price: '2 100$',
     period: 'per day',
-    image: '/images/cars/porsche-911.png',
+    image: '/images/cars/porsche-911.webp',
   },
   {
     id: 'g63-amg',
@@ -114,7 +114,7 @@ export const POPULAR_CARS_DATA = [
     name: 'Mercedes-Benz G63 AMG',
     price: '1 950$',
     period: 'per day',
-    image: '/images/cars/mercedes-g63-amg.png',
+    image: '/images/cars/mercedes-g63-amg.webp',
   },
 ];
 

@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Check, Mail } from 'lucide-react';
 import { Button } from '../ui/Button';
-import radialLeftBg from '../../assets/images/radial-left.png';
-import radialRightBg from '../../assets/images/radial-right.png';
-import neonDotsBg from '../../assets/images/neon-dots.png';
+import radialLeftBg from '../../assets/images/banner/radial-left.webp';
+import radialRightBg from '../../assets/images/banner/radial-right.webp';
+import neonDotsBg from '../../assets/images/banner/neon-dots.webp';
 
 export const DiscountBanner = () => {
   const { t } = useTranslation();
@@ -25,6 +25,8 @@ export const DiscountBanner = () => {
       <img
         src={neonDotsBg}
         alt=""
+        loading="lazy"
+        decoding="async"
         className="absolute -right-3 -bottom-4 sm:-right-4 sm:-bottom-4 md:-right-6 md:-bottom-2 lg:-right-16 lg:bottom-0 pointer-events-none z-20 w-28 sm:w-36 md:w-40 lg:w-44 object-contain opacity-90 select-none"
       />
 
@@ -34,6 +36,8 @@ export const DiscountBanner = () => {
         <img
           src={radialLeftBg}
           alt=""
+          loading="lazy"
+          decoding="async"
           className="absolute -left-10 -bottom-10 w-48 sm:w-64 md:w-72 lg:w-80 pointer-events-none opacity-40 select-none"
         />
 
@@ -41,6 +45,8 @@ export const DiscountBanner = () => {
         <img
           src={radialRightBg}
           alt=""
+          loading="lazy"
+          decoding="async"
           className="absolute -right-8 -top-8 w-48 sm:w-64 md:w-72 lg:w-80 pointer-events-none opacity-40 select-none"
         />
 

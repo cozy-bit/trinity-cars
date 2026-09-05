@@ -1,12 +1,12 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import advantageFleet from '../../assets/images/advantages/advantage-fleet.png';
-import advantageDelivery from '../../assets/images/advantages/advantage-delivery.png';
-import advantageInsurance from '../../assets/images/advantages/advantage-insurance.png';
-import advantagePrivacy from '../../assets/images/advantages/advantage-privacy.png';
-import advantageSupport from '../../assets/images/advantages/advantage-support.png';
-import advantagePackage from '../../assets/images/advantages/advantage-package.png';
+import advantageFleet from '../../assets/images/advantages/advantage-fleet.webp';
+import advantageDelivery from '../../assets/images/advantages/advantage-delivery.webp';
+import advantageInsurance from '../../assets/images/advantages/advantage-insurance.webp';
+import advantagePrivacy from '../../assets/images/advantages/advantage-privacy.webp';
+import advantageSupport from '../../assets/images/advantages/advantage-support.webp';
+import advantagePackage from '../../assets/images/advantages/advantage-package.webp';
 
 const advantagesList = [
   {
@@ -74,6 +74,7 @@ export const Advantages = () => {
               alt={item.text}
               className="absolute inset-0 w-full h-full object-cover opacity-40 grayscale contrast-125 group-hover:opacity-100 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500 ease-out select-none"
               loading="lazy"
+              decoding="async"
             />
 
             {/* Bottom Gradient for Readable Typography */}
