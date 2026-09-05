@@ -10,7 +10,7 @@ import heroBgImg from '../../assets/images/hero-bg.png';
 export const MobileMenu = ({ isOpen, onClose }) => {
   const { t, i18n } = useTranslation();
   const { selectedCity, setSelectedCity, location } = useLocation();
-  const [activeItem, setActiveItem] = useState('Yacht list');
+  const [activeItem, setActiveItem] = useState('Car List');
   const [isLangOpen, setIsLangOpen] = useState(false);
   const [isCityOpen, setIsCityOpen] = useState(false);
   const [shouldRender, setShouldRender] = useState(false);

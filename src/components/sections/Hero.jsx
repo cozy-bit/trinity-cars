@@ -142,7 +142,7 @@ export const Hero = () => {
             className="flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 h-10 sm:h-14 rounded-full bg-black/50 hover:bg-black/80 backdrop-blur-md border border-white/20 hover:border-[#29b6b6] text-[11px] sm:text-xs font-semibold uppercase tracking-widest text-gray-200 hover:text-[#29b6b6] transition-all duration-300 shadow-xl hover:shadow-[0_0_20px_rgba(41,182,182,0.35)] group cursor-pointer"
             aria-label="Skip intro animation"
           >
-            <span>Skip Intro</span>
+            <span>{t('hero.skipIntro', 'Skip Intro')}</span>
             <FastForward className="w-3.5 h-3.5 text-gray-400 group-hover:text-[#29b6b6] group-hover:translate-x-0.5 transition-all duration-300" />
           </button>
         </div>

@@ -13,7 +13,7 @@ export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCityOpen, setIsCityOpen] = useState(false);
   const [isLangOpen, setIsLangOpen] = useState(false);
-  const [activeNav, setActiveNav] = useState('yachtList');
+  const [activeNav, setActiveNav] = useState('carList');
   const [isScrolled, setIsScrolled] = useState(false);
 
   const cityDropdownRef = useRef(null);

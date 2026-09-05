@@ -11,7 +11,8 @@
   },
   "hero": {
     "city": "Dubai",
-    "subtitle": "LUXURY CAR RENTAL"
+    "subtitle": "LUXURY CAR RENTAL",
+    "skipIntro": "Skip Intro"
   },
   "mostPopular": {
     "title": "Most Popular",
@@ -29,6 +30,42 @@
       "popular": "Most popular",
       "daily": "Daily"
     }
+  },
+  "aboutUs": {
+    "title": "About Us",
+    "stats": {
+      "years": "years",
+      "yearsText": "We have come a long way from a 2-person company to winning a Webby Award.",
+      "cars": "cars",
+      "carsText": "Exclusive luxury fleet with regular updates and top configurations.",
+      "people": "team members",
+      "peopleText": "Dedicated concierges and technicians delivering flawless service 24/7."
+    },
+    "quote": {
+      "part1": "I have been working with cars for more than",
+      "yearsHighlight": "18 years.",
+      "part2": "My passion for automobiles and",
+      "detailsHighlight": "attention to detail",
+      "part3": "will make your experience with us unforgettable.",
+      "guaranteed": "Guaranteed."
+    },
+    "author": {
+      "name": "Kirill Aliev, MBA",
+      "role": "CEO Trinity car rental boutique"
+    },
+    "imageAlt": "Cars in the showroom"
+  },
+  "reviews": {
+    "title": "Reviews"
+  },
+  "advantages": {
+    "title": "Advantages",
+    "fleet": "40+ unique cars for rent from our fleet",
+    "delivery": "Delivery and return of cars in Dubai 24/7",
+    "insurance": "Insurance without a deductible for each car",
+    "privacy": "No video or audio recording in the car",
+    "support": "24/7 technical support",
+    "package": "All models have a premium package"
   },
   "mapContact": {
     "title": "Ask us anything",
@@ -51,11 +88,21 @@
     "carList": "Car List",
     "service": "Service",
     "requestCallback": "REQUEST A CALLBACK",
+    "callbackModalTitle": "Request a Callback",
+    "callbackDesc": "Leave your phone number and our personal concierge will contact you within 5 minutes.",
+    "callbackSuccess": "We will call you back shortly!",
     "address": "24 4th St - Al Quoz - Al Quoz Industrial Area 3 - Dubai",
-    "newsletterPlaceholder": "Your email",
-    "subscribe": "SUBSCRIBE",
+    "newsletterPlaceholder": "Write your E-mail",
+    "subscribe": "SUBMIT",
     "copyright": "© 2026 TRINITY. All rights reserved.",
-    "privacyPolicy": "Privacy Policy"
+    "privacyPolicy": "Privacy Policy",
+    "categories": {
+      "suvs": "SUVs",
+      "convertibles": "Convertibles",
+      "sportsCars": "Sports Cars",
+      "premium": "Premium",
+      "coupe": "Coupe"
+    }
   },
   "buttons": {
     "rent": "Rent",
