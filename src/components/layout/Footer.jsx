@@ -7,16 +7,16 @@ import { Input } from '../ui/Input';
 import { Modal } from '../ui/Modal';
 
 // Payment images
-import visaImg from '../../assets/images/payments/visa.png';
-import mastercardImg from '../../assets/images/payments/mastercard.png';
-import amexImg from '../../assets/images/payments/american-express.png';
-import unionPayImg from '../../assets/images/payments/union-pay.png';
-import tetherImg from '../../assets/images/payments/tether.png';
-import googlePayImg from '../../assets/images/payments/google-pay.png';
-import applePayImg from '../../assets/images/payments/apple-pay.png';
-import giroPayImg from '../../assets/images/payments/giro-pay.png';
-import cashImg from '../../assets/images/payments/cash.png';
-import safetyPayImg from '../../assets/images/payments/safety-pay.png';
+import visaImg from '../../assets/images/payments/visa.webp';
+import mastercardImg from '../../assets/images/payments/mastercard.webp';
+import amexImg from '../../assets/images/payments/american-express.webp';
+import unionPayImg from '../../assets/images/payments/union-pay.webp';
+import tetherImg from '../../assets/images/payments/tether.webp';
+import googlePayImg from '../../assets/images/payments/google-pay.webp';
+import applePayImg from '../../assets/images/payments/apple-pay.webp';
+import giroPayImg from '../../assets/images/payments/giro-pay.webp';
+import cashImg from '../../assets/images/payments/cash.webp';
+import safetyPayImg from '../../assets/images/payments/safety-pay.webp';
 
 export const Footer = () => {
   const { t } = useTranslation();
@@ -514,6 +514,8 @@ export const Footer = () => {
                     key={payment.name}
                     src={payment.img}
                     alt={payment.name}
+                    loading="lazy"
+                    decoding="async"
                     className="h-4 sm:h-5 w-auto object-contain opacity-40 hover:opacity-100 grayscale brightness-125 contrast-125 transition-opacity duration-300 select-none"
                   />
                 ))}

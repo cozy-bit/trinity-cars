@@ -1,6 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import cars from "./../../assets/images/showroom.jpg";
+import cars from "../../assets/images/about/showroom.webp";
 
 export const AboutUs = () => {
   const { t } = useTranslation();
@@ -105,6 +105,7 @@ export const AboutUs = () => {
           alt={t("aboutUs.imageAlt", "Cars in the showroom")}
           className="h-full w-full object-cover"
           loading="lazy"
+          decoding="async"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/10 to-transparent pointer-events-none" />
       </div>

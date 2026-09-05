@@ -1,16 +1,15 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 
 const TOTAL_FRAMES = 82;
 
 export const CanvasSequence = ({ progress = 0 }) => {
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
-  const imagesRef = useRef([]);
+  const imagesRef = useRef(new Array(TOTAL_FRAMES));
   const targetFrameRef = useRef(0);
   const currentFrameRef = useRef(0);
   const lastDrawnFrameRef = useRef(-1);
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [loadPercent, setLoadPercent] = useState(0);
+  const hasStartedBackgroundLoad = useRef(false);
 
   // Helper to get frame path
   const getFramePath = (index) => {
@@ -18,10 +17,10 @@ export const CanvasSequence = ({ progress = 0 }) => {
     return `/sequence/frame_${frameNum}.webp`;
   };
 
-  // Find nearest loaded image to prevent any blank frames or sudden jumps back to frame 0
+  // Find nearest loaded image to prevent any blank frames or white flashes
   const getBestImage = useCallback((targetIndex) => {
     const images = imagesRef.current;
-    if (!images || images.length === 0) return null;
+    if (!images) return null;
 
     // 1. Exact match if fully loaded
     const exact = images[targetIndex];
@@ -43,6 +42,12 @@ export const CanvasSequence = ({ progress = 0 }) => {
       if (img && img.complete && img.naturalWidth > 0) {
         return img;
       }
+    }
+
+    // 4. Ultimate fallback to frame 0
+    const first = images[0];
+    if (first && first.complete && first.naturalWidth > 0) {
+      return first;
     }
 
     return null;
@@ -109,59 +114,93 @@ export const CanvasSequence = ({ progress = 0 }) => {
     lastDrawnFrameRef.current = frameIndex;
   }, [getBestImage]);
 
-  // Preload all frames eagerly with robust fallback & zero freeze
+  // 1. Instant First Frame Load (Non-blocking FCP / LCP)
   useEffect(() => {
-    let isCancelled = false;
-    imagesRef.current = new Array(TOTAL_FRAMES);
-    let loadedCount = 0;
+    const firstImg = new Image();
+    firstImg.onload = () => {
+      imagesRef.current[0] = firstImg;
+      renderFrame(0, true);
+    };
+    firstImg.src = getFramePath(0);
+    if (firstImg.complete && firstImg.naturalWidth > 0) {
+      imagesRef.current[0] = firstImg;
+      renderFrame(0, true);
+    }
+  }, [renderFrame]);
 
-    const onImageDone = (img, index, isSuccess = true) => {
-      if (isCancelled) return;
-      if (isSuccess && img && img.naturalWidth > 0) {
-        imagesRef.current[index] = img;
+  // 2. Background Async Queue Loading for remaining frames (002-082)
+  const loadRemainingFrames = useCallback(() => {
+    if (hasStartedBackgroundLoad.current) return;
+    hasStartedBackgroundLoad.current = true;
+
+    // Load in staggered non-blocking batches of 4
+    let currentIndex = 1;
+    const batchSize = 4;
+
+    const loadNextBatch = () => {
+      if (currentIndex >= TOTAL_FRAMES) return;
+
+      const endIndex = Math.min(currentIndex + batchSize, TOTAL_FRAMES);
+      for (let i = currentIndex; i < endIndex; i++) {
+        const frameIdx = i;
+        if (!imagesRef.current[frameIdx]) {
+          const img = new Image();
+          img.onload = () => {
+            if (img.naturalWidth > 0) {
+              imagesRef.current[frameIdx] = img;
+              if (Math.round(currentFrameRef.current) === frameIdx) {
+                renderFrame(frameIdx);
+              }
+            }
+          };
+          img.src = getFramePath(frameIdx);
+        }
       }
-      loadedCount++;
-      const percent = Math.round((loadedCount / TOTAL_FRAMES) * 100);
-      setLoadPercent(percent);
 
-      if (index === 0 && isSuccess) {
-        setIsLoaded(true);
-        renderFrame(0, true);
-      } else if (Math.round(currentFrameRef.current) === index) {
-        renderFrame(index, true);
-      }
-
-      // Unlock UI as soon as first frames or frame 0 are ready
-      if (loadedCount >= 5 || imagesRef.current[0]) {
-        setIsLoaded(true);
+      currentIndex = endIndex;
+      if (currentIndex < TOTAL_FRAMES) {
+        if ('requestIdleCallback' in window) {
+          window.requestIdleCallback(loadNextBatch, { timeout: 200 });
+        } else {
+          setTimeout(loadNextBatch, 30);
+        }
       }
     };
 
-    // Safety timeout: never block the user for more than 1.5s even on slow connections
-    const fallbackTimer = setTimeout(() => {
-      if (!isCancelled) {
-        setIsLoaded(true);
-        renderFrame(0, true);
-      }
-    }, 1500);
-
-    // Eagerly load all frames
-    for (let i = 0; i < TOTAL_FRAMES; i++) {
-      const img = new Image();
-      img.onload = () => onImageDone(img, i, true);
-      img.onerror = () => onImageDone(null, i, false);
-      img.src = getFramePath(i);
-
-      if (img.complete) {
-        onImageDone(img, i, img.naturalWidth > 0);
-      }
+    if ('requestIdleCallback' in window) {
+      window.requestIdleCallback(loadNextBatch, { timeout: 300 });
+    } else {
+      setTimeout(loadNextBatch, 100);
     }
+  }, [renderFrame]);
+
+  // Trigger background loading on mount after initial paint or on first user interaction
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      loadRemainingFrames();
+    }, 150);
+
+    const onUserInteraction = () => {
+      loadRemainingFrames();
+      window.removeEventListener('wheel', onUserInteraction);
+      window.removeEventListener('scroll', onUserInteraction);
+      window.removeEventListener('touchmove', onUserInteraction);
+      window.removeEventListener('pointerdown', onUserInteraction);
+    };
+
+    window.addEventListener('wheel', onUserInteraction, { passive: true });
+    window.addEventListener('scroll', onUserInteraction, { passive: true });
+    window.addEventListener('touchmove', onUserInteraction, { passive: true });
+    window.addEventListener('pointerdown', onUserInteraction, { passive: true });
 
     return () => {
-      isCancelled = true;
-      clearTimeout(fallbackTimer);
+      clearTimeout(timer);
+      window.removeEventListener('wheel', onUserInteraction);
+      window.removeEventListener('scroll', onUserInteraction);
+      window.removeEventListener('touchmove', onUserInteraction);
+      window.removeEventListener('pointerdown', onUserInteraction);
     };
-  }, [renderFrame]);
+  }, [loadRemainingFrames]);
 
   // Handle window resizing
   useEffect(() => {
@@ -189,12 +228,10 @@ export const CanvasSequence = ({ progress = 0 }) => {
 
     const animate = () => {
       const diff = targetFrameRef.current - currentFrameRef.current;
-      
+
       if (Math.abs(diff) > 0.001) {
-        // Silky smooth interpolation: 0.14 factor
         currentFrameRef.current += diff * 0.14;
 
-        // Snap to target if very close to eliminate any micro-flicker or jitter
         if (Math.abs(targetFrameRef.current - currentFrameRef.current) < 0.008) {
           currentFrameRef.current = targetFrameRef.current;
         }
@@ -223,21 +260,8 @@ export const CanvasSequence = ({ progress = 0 }) => {
         ref={canvasRef}
         className="w-full h-full block select-none pointer-events-none"
       />
-
-      {/* Loading overlay for initial batch */}
-      {!isLoaded && (
-        <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-[#0d0f11] text-white">
-          <div className="w-48 h-1 bg-[#1a1d21] rounded-full overflow-hidden mb-3">
-            <div
-              className="h-full bg-brand-cyan transition-all duration-200 shadow-[0_0_12px_var(--color-brand-cyan)]"
-              style={{ width: `${loadPercent}%` }}
-            />
-          </div>
-          <span className="text-xs uppercase tracking-widest text-gray-400 font-medium">
-            Loading sequence {loadPercent}%
-          </span>
-        </div>
-      )}
     </div>
   );
 };
+
+export default CanvasSequence;

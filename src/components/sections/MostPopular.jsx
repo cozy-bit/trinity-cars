@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Search, ChevronUp, ChevronDown } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { POPULAR_CARS_DATA } from '../../data/constants';
-import defaultCarImg from '../../assets/images/most-popular-huracan.png';
+import defaultCarImg from '../../assets/images/most-popular/most-popular-huracan.webp';
 
 const ITEM_HEIGHT = 76; // Height of each car item in px
 const CONTAINER_HEIGHT = 380; // Total height of the carousel viewport
@@ -60,21 +60,15 @@ export const MostPopular = () => {
   }, [selectedCarId, searchQuery, filteredCars]);
 
   const handlePrevCar = () => {
-    if (!filteredCars.length) return;
-    if (activeIndex > 0) {
-      setSelectedCarId(filteredCars[activeIndex - 1].id);
-    } else {
-      setSelectedCarId(filteredCars[filteredCars.length - 1].id);
-    }
+    if (filteredCars.length === 0) return;
+    const nextIdx = activeIndex === 0 ? filteredCars.length - 1 : activeIndex - 1;
+    setSelectedCarId(filteredCars[nextIdx].id);
   };
 
   const handleNextCar = () => {
-    if (!filteredCars.length) return;
-    if (activeIndex < filteredCars.length - 1) {
-      setSelectedCarId(filteredCars[activeIndex + 1].id);
-    } else {
-      setSelectedCarId(filteredCars[0].id);
-    }
+    if (filteredCars.length === 0) return;
+    const nextIdx = (activeIndex + 1) % filteredCars.length;
+    setSelectedCarId(filteredCars[nextIdx].id);
   };
 
   return (
@@ -89,6 +83,8 @@ export const MostPopular = () => {
               key={`img-${selectedCar.id}`}
               src={selectedCar.image || defaultCarImg}
               alt={selectedCar.name}
+              loading="lazy"
+              decoding="async"
               className="absolute inset-0 w-full h-full object-cover rounded-[28px] transition-opacity duration-300 select-none animate-car-image"
             />
 

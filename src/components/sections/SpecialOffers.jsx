@@ -43,88 +43,88 @@ export const SpecialOffers = () => {
       {
         id: 'so-urus',
         name: 'Lamborghini Urus',
-        image: '/images/cars/lamborghini-urus.png',
+        image: '/images/cars/lamborghini-urus.webp',
       },
       {
         id: 'so-roma',
         name: 'Ferrari Roma',
-        image: '/images/cars/ferrari-roma.png',
+        image: '/images/cars/ferrari-roma.webp',
       },
       {
         id: 'so-ghost',
         name: 'Rolls-Royce Ghost',
-        image: '/images/cars/rolls-royce-ghost.png',
+        image: '/images/cars/rolls-royce-ghost.webp',
       },
       {
         id: 'so-porsche',
         name: 'Porsche 911 Turbo S',
-        image: '/images/cars/porsche-911.png',
+        image: '/images/cars/porsche-911.webp',
       },
     ],
     new: [
       {
         id: 'new-rs6',
         name: 'Audi RS6 Avant',
-        image: '/images/cars/audi-rs6.png',
+        image: '/images/cars/audi-rs6.webp',
       },
       {
         id: 'new-huracan',
         name: 'Lamborghini Huracan EVO',
-        image: '/images/cars/lamborghini-huracan-evo.png',
+        image: '/images/cars/lamborghini-huracan-evo.webp',
       },
       {
         id: 'new-bentley',
         name: 'Bentley Continental GT',
-        image: '/images/cars/bentley-continental-gt.png',
+        image: '/images/cars/bentley-continental-gt.webp',
       },
       {
         id: 'new-g63',
         name: 'Mercedes-Benz G63 AMG',
-        image: '/images/cars/mercedes-g63-amg.png',
+        image: '/images/cars/mercedes-g63-amg.webp',
       },
     ],
     popular: [
       {
         id: 'pop-huracan',
         name: 'Lamborghini Huracan EVO',
-        image: '/images/cars/lamborghini-huracan-evo.png',
+        image: '/images/cars/lamborghini-huracan-evo.webp',
       },
       {
         id: 'pop-ghost',
         name: 'Rolls-Royce Ghost',
-        image: '/images/cars/rolls-royce-ghost.png',
+        image: '/images/cars/rolls-royce-ghost.webp',
       },
       {
         id: 'pop-roma',
         name: 'Ferrari Roma',
-        image: '/images/cars/ferrari-roma.png',
+        image: '/images/cars/ferrari-roma.webp',
       },
       {
         id: 'pop-porsche',
         name: 'Porsche 911 Turbo S',
-        image: '/images/cars/porsche-911.png',
+        image: '/images/cars/porsche-911.webp',
       },
     ],
     daily: [
       {
         id: 'daily-rs6',
         name: 'Audi RS6 Avant',
-        image: '/images/cars/audi-rs6.png',
+        image: '/images/cars/audi-rs6.webp',
       },
       {
         id: 'daily-g63',
         name: 'Mercedes-Benz G63 AMG',
-        image: '/images/cars/mercedes-g63-amg.png',
+        image: '/images/cars/mercedes-g63-amg.webp',
       },
       {
         id: 'daily-bentley',
         name: 'Bentley Continental GT',
-        image: '/images/cars/bentley-continental-gt.png',
+        image: '/images/cars/bentley-continental-gt.webp',
       },
       {
         id: 'daily-urus',
         name: 'Lamborghini Urus',
-        image: '/images/cars/lamborghini-urus.png',
+        image: '/images/cars/lamborghini-urus.webp',
       },
     ],
   };
@@ -179,6 +179,8 @@ export const SpecialOffers = () => {
               <img
                 src={car.image}
                 alt={car.name}
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out select-none"
               />
 

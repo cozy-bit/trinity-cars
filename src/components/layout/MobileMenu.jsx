@@ -3,9 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { X, ChevronDown, Send, MessageCircle } from 'lucide-react';
 import { useLocation } from '../../context/LocationContext';
 import { CITIES_DATA } from '../../data/constants';
-import logoImg from '../../assets/images/logo.png';
-import logoSymbolImg from '../../assets/images/logo-symbol.png';
-import heroBgImg from '../../assets/images/hero-bg.png';
+import logoImg from '../../assets/images/branding/logo.webp';
+import logoSymbolImg from '../../assets/images/branding/logo-symbol.webp';
+import heroBgImg from '../../assets/images/hero/hero-bg.webp';
 
 export const MobileMenu = ({ isOpen, onClose }) => {
   const { t, i18n } = useTranslation();

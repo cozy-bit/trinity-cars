@@ -2,10 +2,10 @@ import React, { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Play, ChevronLeft, ChevronRight } from 'lucide-react';
 
-import review1 from '../../assets/images/reviews/review-1.png';
-import review2 from '../../assets/images/reviews/review-2.png';
-import review3 from '../../assets/images/reviews/review-3.png';
-import review4 from '../../assets/images/reviews/review-4.png';
+import review1 from '../../assets/images/reviews/review-1.webp';
+import review2 from '../../assets/images/reviews/review-2.webp';
+import review3 from '../../assets/images/reviews/review-3.webp';
+import review4 from '../../assets/images/reviews/review-4.webp';
 
 const reviewsData = [
   {
@@ -69,6 +69,7 @@ export const Reviews = () => {
                 alt={review.alt}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out select-none"
                 loading="lazy"
+                decoding="async"
               />
 
               {/* Subtle Gradient Overlay */}

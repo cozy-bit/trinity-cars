@@ -4,8 +4,8 @@ import { ChevronDown } from 'lucide-react';
 import { CITIES_DATA } from '../../data/constants';
 import { useLocation } from '../../context/LocationContext';
 import { MobileMenu } from './MobileMenu';
-import logoImg from '../../assets/images/logo.png';
-import logoSymbolImg from '../../assets/images/logo-symbol.png';
+import logoImg from '../../assets/images/branding/logo.webp';
+import logoSymbolImg from '../../assets/images/branding/logo-symbol.webp';
 
 export const Header = () => {
   const { t, i18n } = useTranslation();
