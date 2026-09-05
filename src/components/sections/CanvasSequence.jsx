@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 
 const TOTAL_FRAMES = 82;
 
@@ -10,6 +10,11 @@ export const CanvasSequence = ({ progress = 0 }) => {
   const currentFrameRef = useRef(0);
   const lastDrawnFrameRef = useRef(-1);
   const hasStartedBackgroundLoad = useRef(false);
+
+  // Top neon progress bar state
+  const [loadProgress, setLoadProgress] = useState(12);
+  const [showProgress, setShowProgress] = useState(true);
+  const loadedCountRef = useRef(1);
 
   // Helper to get frame path
   const getFramePath = (index) => {
@@ -120,6 +125,7 @@ export const CanvasSequence = ({ progress = 0 }) => {
     firstImg.onload = () => {
       imagesRef.current[0] = firstImg;
       renderFrame(0, true);
+      setLoadProgress((prev) => Math.max(prev, 15));
     };
     firstImg.src = getFramePath(0);
     if (firstImg.complete && firstImg.naturalWidth > 0) {
@@ -137,6 +143,19 @@ export const CanvasSequence = ({ progress = 0 }) => {
     let currentIndex = 1;
     const batchSize = 4;
 
+    const updateProgress = () => {
+      loadedCountRef.current++;
+      const currentLoaded = loadedCountRef.current;
+      const percent = Math.min(100, Math.round((currentLoaded / TOTAL_FRAMES) * 100));
+      setLoadProgress(percent);
+
+      if (currentLoaded >= TOTAL_FRAMES) {
+        setTimeout(() => {
+          setShowProgress(false);
+        }, 500);
+      }
+    };
+
     const loadNextBatch = () => {
       if (currentIndex >= TOTAL_FRAMES) return;
 
@@ -152,8 +171,14 @@ export const CanvasSequence = ({ progress = 0 }) => {
                 renderFrame(frameIdx);
               }
             }
+            updateProgress();
+          };
+          img.onerror = () => {
+            updateProgress();
           };
           img.src = getFramePath(frameIdx);
+        } else {
+          updateProgress();
         }
       }
 
@@ -180,6 +205,12 @@ export const CanvasSequence = ({ progress = 0 }) => {
       loadRemainingFrames();
     }, 150);
 
+    // Failsafe timer to hide progress bar after 7s even on slow connections
+    const failsafeTimer = setTimeout(() => {
+      setLoadProgress(100);
+      setTimeout(() => setShowProgress(false), 400);
+    }, 7000);
+
     const onUserInteraction = () => {
       loadRemainingFrames();
       window.removeEventListener('wheel', onUserInteraction);
@@ -195,6 +226,7 @@ export const CanvasSequence = ({ progress = 0 }) => {
 
     return () => {
       clearTimeout(timer);
+      clearTimeout(failsafeTimer);
       window.removeEventListener('wheel', onUserInteraction);
       window.removeEventListener('scroll', onUserInteraction);
       window.removeEventListener('touchmove', onUserInteraction);
@@ -255,12 +287,30 @@ export const CanvasSequence = ({ progress = 0 }) => {
   }, [renderFrame]);
 
   return (
-    <div ref={containerRef} className="absolute inset-0 w-full h-full bg-[#0d0f11]">
-      <canvas
-        ref={canvasRef}
-        className="w-full h-full block select-none pointer-events-none"
-      />
-    </div>
+    <>
+      {/* Option A: Top Neon Progress Bar (1-2px in brand-cyan) */}
+      {showProgress && (
+        <div
+          className="fixed top-0 left-0 right-0 h-[2px] z-[99999] pointer-events-none transition-opacity duration-500 ease-out"
+          style={{ opacity: loadProgress >= 100 ? 0 : 1 }}
+        >
+          <div
+            className="h-full bg-brand-cyan shadow-[0_0_12px_#00f5d4,0_0_6px_#29b6b6] transition-all duration-200 ease-out relative"
+            style={{ width: `${loadProgress}%` }}
+          >
+            {/* Subtle luminous tip on the right edge */}
+            <div className="absolute right-0 top-1/2 -translate-y-1/2 w-5 h-2 bg-white/90 rounded-full blur-[1.5px]" />
+          </div>
+        </div>
+      )}
+
+      <div ref={containerRef} className="absolute inset-0 w-full h-full bg-[#0d0f11]">
+        <canvas
+          ref={canvasRef}
+          className="w-full h-full block select-none pointer-events-none"
+        />
+      </div>
+    </>
   );
 };
 

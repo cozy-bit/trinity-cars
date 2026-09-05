@@ -124,8 +124,8 @@ export const Hero = () => {
             transform: `translateY(${(1 - hintOpacity) * -15}px)`,
           }}
         >
-          <div className="flex items-center justify-center w-10 sm:w-14 h-10 sm:h-14 rounded-full bg-black/40 backdrop-blur-md border border-white/10 shadow-2xl">
-            <ChevronDown className="w-5 h-5 sm:w-6 sm:h-6 text-brand-cyan animate-bounce" />
+          <div className="flex items-center justify-center w-10 sm:w-14 h-10 sm:h-14 rounded-full bg-black/40 backdrop-blur-md border border-white/10 shadow-2xl animate-bounce">
+            <ChevronDown className="w-5 h-5 sm:w-6 sm:h-6 text-brand-cyan" />
           </div>
         </div>
 
