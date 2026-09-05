@@ -158,17 +158,17 @@ export const Footer = () => {
                   <ul className="flex flex-col gap-2.5 text-xs sm:text-sm text-gray-400">
                     <li>
                       <a href="#hero" className="hover:text-white transition-colors">
-                        Car List
+                        {t('nav.carList', 'Car List')}
                       </a>
                     </li>
                     <li>
                       <a href="#special-offers" className="hover:text-white transition-colors">
-                        Yacht list
+                        {t('nav.yachtList', 'Yacht list')}
                       </a>
                     </li>
                     <li>
                       <a href="#hero" className="hover:text-white transition-colors">
-                        Chauffeur
+                        {t('nav.chauffeur', 'Chauffeur')}
                       </a>
                     </li>
                   </ul>
@@ -183,27 +183,27 @@ export const Footer = () => {
                 <ul className="flex flex-col gap-2.5 text-xs sm:text-sm text-gray-400">
                   <li>
                     <a href="#most-popular" className="hover:text-white transition-colors">
-                      SUVs
+                      {t('footer.categories.suvs', 'SUVs')}
                     </a>
                   </li>
                   <li>
                     <a href="#most-popular" className="hover:text-white transition-colors">
-                      Convertibles
+                      {t('footer.categories.convertibles', 'Convertibles')}
                     </a>
                   </li>
                   <li>
                     <a href="#most-popular" className="hover:text-white transition-colors">
-                      Sports Cars
+                      {t('footer.categories.sportsCars', 'Sports Cars')}
                     </a>
                   </li>
                   <li>
                     <a href="#most-popular" className="hover:text-white transition-colors">
-                      Premium
+                      {t('footer.categories.premium', 'Premium')}
                     </a>
                   </li>
                   <li>
                     <a href="#most-popular" className="hover:text-white transition-colors">
-                      Coupe
+                      {t('footer.categories.coupe', 'Coupe')}
                     </a>
                   </li>
                 </ul>
@@ -373,27 +373,27 @@ export const Footer = () => {
                   <ul className="flex flex-col gap-2.5 text-xs sm:text-sm text-gray-400">
                     <li className="whitespace-nowrap">
                       <a href="#most-popular" className="hover:text-white transition-colors">
-                        SUVs
+                        {t('footer.categories.suvs', 'SUVs')}
                       </a>
                     </li>
                     <li className="whitespace-nowrap">
                       <a href="#most-popular" className="hover:text-white transition-colors">
-                        Convertibles
+                        {t('footer.categories.convertibles', 'Convertibles')}
                       </a>
                     </li>
                     <li className="whitespace-nowrap">
                       <a href="#most-popular" className="hover:text-white transition-colors">
-                        Sports Cars
+                        {t('footer.categories.sportsCars', 'Sports Cars')}
                       </a>
                     </li>
                     <li className="whitespace-nowrap">
                       <a href="#most-popular" className="hover:text-white transition-colors">
-                        Premium
+                        {t('footer.categories.premium', 'Premium')}
                       </a>
                     </li>
                     <li className="whitespace-nowrap">
                       <a href="#most-popular" className="hover:text-white transition-colors">
-                        Coupe
+                        {t('footer.categories.coupe', 'Coupe')}
                       </a>
                     </li>
                   </ul>
@@ -407,17 +407,17 @@ export const Footer = () => {
                   <ul className="flex flex-col gap-2.5 text-xs sm:text-sm text-gray-400">
                     <li className="whitespace-nowrap">
                       <a href="#hero" className="hover:text-white transition-colors">
-                        Car List
+                        {t('nav.carList', 'Car List')}
                       </a>
                     </li>
                     <li className="whitespace-nowrap">
                       <a href="#special-offers" className="hover:text-white transition-colors">
-                        Yacht list
+                        {t('nav.yachtList', 'Yacht list')}
                       </a>
                     </li>
                     <li className="whitespace-nowrap">
                       <a href="#hero" className="hover:text-white transition-colors">
-                        Chauffeur
+                        {t('nav.chauffeur', 'Chauffeur')}
                       </a>
                     </li>
                   </ul>
@@ -593,17 +593,19 @@ export const Footer = () => {
       <Modal
         isOpen={isCallbackOpen}
         onClose={() => setIsCallbackOpen(false)}
-        title="Request a Callback"
+        title={t('footer.callbackModalTitle', 'Request a Callback')}
       >
         {callbackSent ? (
           <div className="py-6 text-center flex flex-col items-center">
             <Check className="w-12 h-12 text-brand-cyan mb-3" />
-            <p className="text-white font-medium text-base">We will call you back shortly!</p>
+            <p className="text-white font-medium text-base">
+              {t('footer.callbackSuccess', 'We will call you back shortly!')}
+            </p>
           </div>
         ) : (
           <form onSubmit={handleCallbackSubmit} className="flex flex-col gap-4">
             <p className="text-xs text-gray-400">
-              Leave your phone number and our personal concierge will contact you within 5 minutes.
+              {t('footer.callbackDesc', 'Leave your phone number and our personal concierge will contact you within 5 minutes.')}
             </p>
             <Input
               type="tel"
@@ -616,7 +618,7 @@ export const Footer = () => {
               }}
             />
             <Button type="submit" variant="primary" className="w-full py-3 mt-2 font-bold">
-              SUBMIT
+              {t('footer.subscribe', 'SUBMIT')}
             </Button>
           </form>
         )}
